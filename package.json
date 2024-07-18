@@ -1,0 +1,35 @@
+{
+  "author": "stagas",
+  "version": "1.0.0",
+  "description": "",
+  "license": "AGPLv3",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "dev": "vite",
+    "test": "echo ok",
+    "postinstall": "link-local"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.4",
+    "ambient-dts": "github:stagas/ambient-dts",
+    "autoprefixer": "^10.4.17",
+    "daisyui": "^4.6.0",
+    "postcss": "^8.4.33",
+    "postcss-load-config": "^5.0.2",
+    "vite": "^5.3.3",
+    "vite-coop-coep": "github:stagas/vite-coop-coep",
+    "vite-open-in-editor": "github:stagas/vite-open-in-editor",
+    "vite-plugin-node-polyfills": "^0.19.0",
+    "vite-print-urls": "github:stagas/vite-print-urls",
+    "vite-using": "github:stagas/vite-using"
+  },
+  "dependencies": {
+    "@tensorflow/tfjs": "^4.20.0",
+    "face-api.js": "^0.22.2",
+    "jszip": "^3.10.1",
+    "signal-jsx": "github:stagas/signal-jsx",
+    "tailwindcss": "^3.4.1",
+    "utils": "github:stagas/utils"
+  }
+}
