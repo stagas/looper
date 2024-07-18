@@ -11,7 +11,9 @@
     "postinstall": "link-local"
   },
   "devDependencies": {
+    "@types/filesystem": "^0.0.36",
     "@types/node": "^20.14.4",
+    "@types/wicg-file-system-access": "^2023.10.5",
     "ambient-dts": "github:stagas/ambient-dts",
     "autoprefixer": "^10.4.17",
     "daisyui": "^4.6.0",
@@ -27,6 +29,7 @@
   "dependencies": {
     "@tensorflow/tfjs": "^4.20.0",
     "face-api.js": "^0.22.2",
+    "idb-keyval": "^6.2.1",
     "jszip": "^3.10.1",
     "signal-jsx": "github:stagas/signal-jsx",
     "tailwindcss": "^3.4.1",
