@@ -2,62 +2,117 @@ import { Signal } from 'signal-jsx'
 import { appState } from '../app-state.ts'
 import { get, set } from 'idb-keyval'
 import JSZip from 'jszip'
-// import { Stack } from './Stack.tsx'
+import { Player } from './Player.tsx'
+import Sortable from 'sortablejs' ///modular/sortable.complete.esm.js'
 
 // declare const window: any
 
-function getFile(entry: FileSystemEntry): Promise<File> {
-  return new Promise((resolve, reject) => {
-    (entry as FileSystemFileEntry).file(resolve, reject)
-  })
-}
+// {
+//   Bass: '#b97bfb',
+//   'Brass & Winds': '#ffe08b',
+//   Chords: '#fd9227',
+//   Drums: '#f9cd5a',
+//   FX: '#e7f183',
+//   Guitar: '#9ffd7c',
+//   Keys: '#45dbfd',
+//   Leads: '#70f442',
+//   Others: '#cccccc',
+//   Pads: '#872ffa',
+//   Percussion: '#ff9791',
+//   Strings: '#3c94fb',
+//   Synth: '#ffc4c1',
+//   Vocals: '#ff8aa6',
+// }
 
-interface Stack {
+const DEBUG = false
+
+export interface Stack {
   name: string
   bpm: number
   stems: Stem[]
 }
 
-interface Stem {
+export interface Stem {
   stack: Stack
   name: string
   bpm: number
+  kind: StemKind
   buffer: AudioBuffer
 }
+
+export enum StemKind {
+  Bass = 'Bass',
+  'Brass & Winds' = 'Brass & Winds',
+  Chords = 'Chords',
+  Drums = 'Drums',
+  FX = 'FX',
+  Guitar = 'Guitar',
+  Keys = 'Keys',
+  Leads = 'Leads',
+  Others = 'Others',
+  Pads = 'Pads',
+  Percussion = 'Percussion',
+  Strings = 'Strings',
+  Synth = 'Synth',
+  Vocals = 'Vocals',
+}
+
+export const StemColors = Object.fromEntries(Object.keys(StemKind).map((name, i) =>
+  [name, `hsl(${(230 - (i * 95)) % 360}, 70%, 60%)`]
+))
 
 export function Main() {
   using $ = Signal()
 
   const audio = new AudioContext()
 
-  // const stacks = <div /> //Loop[] = []
+  const players = <div class="flex flex-col gap-1" /> as HTMLDivElement
 
-  const openFolder = <button onclick={
-    async () => {
-      const dirHandle = await window.showDirectoryPicker({ startIn: 'downloads' })
-      await set('dirHandle', dirHandle)
-      console.log('SET', dirHandle)
-      await tryOpen()
-      // await traverseDirectory(directoryHandle)
-      // displayFolderContent()
+  Sortable.create(players)
+
+  const info = $({
+    stacks: [] as Stack[],
+  })
+
+  $.fx(() => {
+    const { stacks } = info
+    $()
+    const els = stacks.map(stack =>
+      <Player {...{ stack }} />
+    )
+    players.innerHTML = ''
+    for (const el of els) {
+      players.append(el)
     }
-  }>open folder</button>
+  })
+
+  const openFolder = <button onclick={async () => {
+    const dirHandle = await window.showDirectoryPicker({ startIn: 'downloads' })
+    await set('dirHandle', dirHandle)
+    DEBUG && console.log('SET dirHandle', dirHandle)
+    await tryOpen()
+  }} class="
+    btn
+    btn-primary
+  ">
+    select a folder with Splice zip files
+  </button>
 
   async function tryOpen() {
-    const stacks: Stack[] = []
     const dirHandle = await get('dirHandle')
     if (dirHandle) {
-      console.log('GOT', dirHandle)
+      DEBUG && console.log('GOT dirHandle', dirHandle)
       const zipFiles = await findZipFiles(dirHandle)
       for (const file of zipFiles) {
         const stack = await readZipFile(dirHandle, file.name)
-        stacks.push(stack)
+        openFolder.remove()
+        info.stacks.push(stack)
+        info.stacks = [...info.stacks]
       }
     }
     else {
-      console.log('dirHandle not found')
+      DEBUG && console.warn('dirHandle not found')
     }
-    console.log(stacks)
   }
 
   async function readZipFile(dirHandle: FileSystemDirectoryHandle, fileName: string) {
@@ -88,6 +143,8 @@ export function Main() {
 
       const name = file.name.split('/')[1].split(' - ').slice(2).join(' - ')
       const bpm = Number(file.name.split('/')[1].split(' - ')[1].split(' ')[0])
+      const kind = file.name.split('/')[1].split(' - ')[3] as StemKind
+
       const arrayBuffer = await file.async('arraybuffer')
       const buffer = await audio.decodeAudioData(arrayBuffer)
 
@@ -95,6 +152,7 @@ export function Main() {
         stack,
         name,
         bpm,
+        kind,
         buffer,
       }
 
@@ -121,62 +179,14 @@ export function Main() {
     return zipFiles
   }
 
-  // const dropArea = <div
-  //   class="w-80 h-80 flex items-center justify-center border-2 border-white"
-  //   ondragover={(event: DragEvent) => {
-  //     event.preventDefault()
-  //     dropArea.style.backgroundColor = '#f0f0f0'
-  //   }}
-  //   ondragleave={() => {
-  //     dropArea.style.backgroundColor = ''
-  //   }}
-  //   ondrop={async (event: DragEvent) => {
-  //     event.preventDefault()
-
-  //     dropArea.style.backgroundColor = ''
-
-  //     const items = event.dataTransfer?.items
-
-  //     if (items) {
-  //       for (let i = 0; i < items.length; i++) {
-  //         const item = items[i].webkitGetAsEntry()
-  //         console.log(item)
-  //         if (item && item.isDirectory) {
-  //           (item as FileSystemDirectoryEntry).getDirectory()
-  //           const file = await getFile(item)
-  //           console.log(file)
-  //           if (file.type === 'application/zip') {
-  //             console.log('yeah', item)
-  //           }
-  //         }
-  //       }
-  //     }
-  //     // if (files && files.length > 0) {
-  //     //   const file = files[0]
-  //     //   if (file.type === 'application/zip') {
-  //     //     const zip = await JSZip.loadAsync(file)
-  //     //     stacks.append(<Stack {...{ audio, zip }} />)
-  //     //   } else {
-  //     //     alert('Drop Splice Stack ZIP file.')
-  //     //   }
-  //     // }
-  //   }}
-  // >
-  //   Drop a Splice Stack zip file here
-  // </div> as HTMLDivElement
-
-
   $.fx(() => () => {
     audio.close()
   })
 
   tryOpen()
 
-  return <main
-    data-theme={() => appState.theme}
-    class="m-4">
-    {/* {dropArea} */}
+  return <main>
     {openFolder}
-    {/* {stacks} */}
+    {players}
   </main>
 }

@@ -4,7 +4,8 @@
 
 * {
   box-sizing: border-box;
-  font-family: sans-serif;
+  font-family: "Roboto Condensed", sans-serif;
+  line-height: 1.25em;
 }
 
 .btn {

@@ -4,7 +4,14 @@ import { Main } from './comp/Main.tsx'
 
 export const start = mount('#container', target => {
   return fx(() => {
-    target.replaceChildren(<div class="h-full w-full"><Main /></div>)
+    target.replaceChildren(
+      <div
+        data-theme={() => appState.theme}
+        class="h-full w-full p-4"
+      >
+        <Main />
+      </div>
+    )
     return cleanup
   })
 })
