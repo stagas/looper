@@ -8,8 +8,7 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "test": "echo ok",
-    "postinstall": "if test \"$NODE_ENV\" = \"production\" ; then echo ok ; else link-local ; fi"
+    "test": "echo ok"
   },
   "devDependencies": {
     "@types/filesystem": "^0.0.36",
