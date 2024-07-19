@@ -16,10 +16,11 @@ export function Player({ stack }: { stack: Stack }) {
   const stemsEl = <div class="min-w-40 flex items-center justify-start flex-row gap-1">{...stems}</div> as HTMLDivElement
 
   Sortable.create(stemsEl, {
-    delay: 100
+    animation: 120,
+    delay: 0 // 100
   })
 
-  const el = <div class="flex flex-row gap-2">
+  const el = <div class="flex flex-row gap-2" data-name={stack.name}>
     <div class="w-60 flex items-center justify-end">{stack.name}</div>
     {stemsEl}
   </div>

@@ -1,5 +1,5 @@
 import { Signal } from 'signal-jsx'
-import { appState } from '../app-state.ts'
+import { appState, Sorting } from '../app-state.ts'
 import { get, set } from 'idb-keyval'
 import JSZip from 'jszip'
 import { Player } from './Player.tsx'
@@ -25,6 +25,8 @@ import Sortable from 'sortablejs' ///modular/sortable.complete.esm.js'
 // }
 
 const DEBUG = false
+
+const SEPARATOR_TRACKS = '%%%'
 
 export interface Stack {
   name: string
@@ -68,7 +70,22 @@ export function Main() {
 
   const players = <div class="flex flex-col gap-1" /> as HTMLDivElement
 
-  Sortable.create(players)
+  Sortable.create(players, {
+    animation: 120,
+    onEnd(ev) {
+      const sorting: Sorting = {}
+      for (const stack of players.children) {
+        const name = (stack as HTMLElement).dataset.name || '<invalid>'
+        const stems: string[] = []
+        for (const stem of stack.children) {
+          const name = (stem as HTMLElement).dataset.name || '<invalid>'
+          stems.push(name)
+        }
+        sorting[name] = stems
+      }
+      appState.sorting = sorting
+    }
+  })
 
   const info = $({
     stacks: [] as Stack[],
@@ -81,6 +98,7 @@ export function Main() {
       <Player {...{ stack }} />
     )
     players.innerHTML = ''
+
     for (const el of els) {
       players.append(el)
     }
@@ -90,7 +108,7 @@ export function Main() {
     const dirHandle = await window.showDirectoryPicker({ startIn: 'downloads' })
     await set('dirHandle', dirHandle)
     DEBUG && console.log('SET dirHandle', dirHandle)
-    await tryOpen()
+    await tryReadDir()
   }} class="
     btn
     btn-primary
@@ -98,7 +116,7 @@ export function Main() {
     select a folder with Splice zip files
   </button>
 
-  async function tryOpen() {
+  async function tryReadDir() {
     const dirHandle = await get('dirHandle')
     if (dirHandle) {
       DEBUG && console.log('GOT dirHandle', dirHandle)
@@ -183,7 +201,7 @@ export function Main() {
     audio.close()
   })
 
-  tryOpen()
+  tryReadDir()
 
   return <main>
     {openFolder}

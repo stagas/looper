@@ -2,9 +2,14 @@ import { Theme } from 'daisyui'
 import themes from 'daisyui/src/theming/themes'
 import { $, storage } from 'signal-jsx'
 
+export interface Sorting {
+  [K: string]: string[]
+}
+
 class AppState {
   name = 'App'
   theme = <Theme>'sunset' //storage<Theme>('coffee')
+  sorting = storage<Sorting>({})
   get colors() {
     return themes[appState.theme]
   }
