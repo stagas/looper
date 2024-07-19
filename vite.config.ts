@@ -1,14 +1,14 @@
 import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
-import { defineConfig } from 'vite'
+import { defineConfig, Plugin } from 'vite'
 import { coopCoep } from 'vite-coop-coep'
 import { openInEditor } from 'vite-open-in-editor'
 import { nodePolyfills } from 'vite-plugin-node-polyfills'
 import { printUrlsPlugin } from 'vite-print-urls'
 import { viteUsing } from 'vite-using'
-
-import type { Plugin } from 'vite'
+import { assemblyScriptPlugin } from 'vite-assemblyscript'
+import tsconfigPaths from 'vite-tsconfig-paths'
 
 const homedir = os.homedir()
 
@@ -43,10 +43,21 @@ export default defineConfig({
     }
   },
   plugins: [
-    // coopCoep() as Plugin,
+    coopCoep() as Plugin,
     nodePolyfills(),
     viteUsing() as Plugin,
-    openInEditor(),
+    openInEditor() as Plugin,
     printUrlsPlugin() as Plugin,
+    tsconfigPaths(),
+    assemblyScriptPlugin({
+      configFile: 'asconfig-seq.json',
+      projectRoot: '.',
+      srcMatch: 'as/assembly/seq',
+      srcEntryFile: 'as/assembly/seq/index.ts',
+      mapFile: './as/build/seq.wasm.map',
+      // extra: [
+      //   '--transform', './vendor/unroll.js',
+      // ]
+    }) as Plugin,
   ],
 })

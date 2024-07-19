@@ -1,5 +1,6 @@
 {
   "include": [
+    "as",
     "src"
   ],
   "compilerOptions": {
@@ -35,6 +36,11 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "allowJs": true,
-    "strict": true
+    "strict": true,
+    "paths": {
+      "assembly-seq": [
+        "./src/bindings-seq"
+      ]
+    }
   }
 }

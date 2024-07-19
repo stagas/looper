@@ -1,6 +1,7 @@
 import { cleanup, fx, hmr, mount } from 'signal-jsx'
 import { appState, replaceAppState } from './app-state.ts'
 import { Main } from './comp/Main.tsx'
+import seq from 'assembly-seq'
 
 export const start = mount('#container', target => {
   return fx(() => {
