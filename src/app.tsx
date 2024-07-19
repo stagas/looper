@@ -23,3 +23,5 @@ if (import.meta.hot) {
 else {
   start()
 }
+
+console.log('from wasm', seq.add(32, 10))

@@ -39,7 +39,7 @@
     "strict": true,
     "paths": {
       "assembly-seq": [
-        "./src/bindings-seq"
+        "./src/wasm-seq"
       ]
     }
   }

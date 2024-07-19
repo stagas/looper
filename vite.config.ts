@@ -46,6 +46,7 @@ export default defineConfig({
     format: 'es',
   },
   build: {
+    target: 'esnext',
     rollupOptions: {
       treeshake: { propertyReadSideEffects: 'always' }
     }
