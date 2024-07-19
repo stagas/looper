@@ -23,3 +23,18 @@ html, body {
   width: 100%;
   height: 100%;
 }
+
+.playing {
+  position: relative;
+}
+
+.playing:after {
+  content: '▶️';
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: center;
+  color: black;
+}

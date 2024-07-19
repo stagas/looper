@@ -7,7 +7,7 @@ export const start = mount('#container', target => {
     target.replaceChildren(
       <div
         data-theme={() => appState.theme}
-        class="h-full w-full p-4"
+        class="h-full w-full flex flex-col items-center justify-center"
       >
         <Main />
       </div>

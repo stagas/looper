@@ -1,4 +1,4 @@
-import { Signal } from 'signal-jsx'
+import { $, Signal } from 'signal-jsx'
 import { appState, Sorting } from '../app-state.ts'
 import { get, set } from 'idb-keyval'
 import JSZip from 'jszip'
@@ -26,7 +26,7 @@ import Sortable from 'sortablejs' ///modular/sortable.complete.esm.js'
 
 const DEBUG = false
 
-const SEPARATOR_TRACKS = '%%%'
+const VOL_TIME_CONSTANT = 0.03
 
 export interface Stack {
   name: string
@@ -40,28 +40,41 @@ export interface Stem {
   bpm: number
   kind: StemKind
   buffer: AudioBuffer
+  vol: number
+  info: $<{
+    isPlaying: boolean
+  }>
 }
 
 export enum StemKind {
-  Bass = 'Bass',
-  'Brass & Winds' = 'Brass & Winds',
-  Chords = 'Chords',
   Drums = 'Drums',
-  FX = 'FX',
-  Guitar = 'Guitar',
-  Keys = 'Keys',
-  Leads = 'Leads',
-  Others = 'Others',
-  Pads = 'Pads',
+  Bass = 'Bass',
   Percussion = 'Percussion',
+  Others = 'Others',
+  FX = 'FX',
+  Chords = 'Chords',
+  Pads = 'Pads',
+  Keys = 'Keys',
+  'Brass & Winds' = 'Brass & Winds',
   Strings = 'Strings',
+  Guitar = 'Guitar',
+  Leads = 'Leads',
   Synth = 'Synth',
   Vocals = 'Vocals',
 }
 
 export const StemColors = Object.fromEntries(Object.keys(StemKind).map((name, i) =>
-  [name, `hsl(${(230 - (i * 95)) % 360}, 70%, 60%)`]
+  [name, `hsl(${(235 - (i * 20)) % 360}, 65%, 55%)`]
 ))
+
+export interface ScheduleEvent {
+  stem: Stem
+  targetTime: number
+  source: AudioBufferSourceNode
+  gain: GainNode
+  isStart: boolean
+  isEnd: boolean
+}
 
 export function Main() {
   using $ = Signal()
@@ -119,14 +132,95 @@ export function Main() {
     select a folder with Splice zip files
   </button>
 
+  function play() {
+    // console.log(info.stacks)
+    const schedule: ScheduleEvent[] = []
+    let targetTime = audio.currentTime + 0.1
+    for (const stack of info.stacks) {
+      for (const [i, stem] of stack.stems.entries()) {
+        const source = audio.createBufferSource()
+        source.buffer = stem.buffer
+        source.loop = true
+        const gain = audio.createGain()
+        gain.gain.value = 0
+        source.connect(gain)
+        gain.connect(audio.destination)
+        schedule.push({
+          stem,
+          targetTime,
+          source,
+          gain,
+          isStart: i === 0,
+          isEnd: i === stack.stems.length - 1
+        })
+        targetTime += stem.buffer.duration
+      }
+    }
+
+    const current = []
+    let countUp = 0
+    let countDown = 0
+    for (const [i, ev] of schedule.entries()) {
+      ev.source.start(ev.targetTime)
+      setTimeout(() => {
+        ev.stem.info.isPlaying = true
+      }, (ev.targetTime - audio.currentTime) * 1000)
+
+      ev.gain.gain.setTargetAtTime(
+        ev.stem.vol,
+        ev.targetTime,
+        VOL_TIME_CONSTANT // TODO: fade in
+      )
+
+      current.push(ev)
+      ++countUp
+
+      if (ev.isEnd) {
+        countDown = countUp
+        countUp = 0
+      }
+
+      if (--countDown >= 0) {
+        const old = current.shift()
+        if (old) {
+          const endTime =
+            schedule[i + 2]?.targetTime
+            || schedule[i + 1]?.targetTime
+            || ev.targetTime
+
+          old.source.stop(endTime)
+          old.gain.gain.setTargetAtTime(
+            0,
+            endTime,
+            VOL_TIME_CONSTANT // TODO: fade out
+          )
+
+          setTimeout(() => {
+            old.stem.info.isPlaying = false
+          }, (endTime - audio.currentTime) * 1000)
+        }
+      }
+    }
+  }
+  const playBtn = <div class="flex flex-row items-center justify-start gap-2">
+    <div class="w-40" />
+    <button
+      class="
+      btn
+      btn-primary
+    "
+      onclick={play}
+    >Play</button>
+  </div>
+
   async function tryReadDir() {
     const dirHandle = await get('dirHandle')
     if (dirHandle) {
       DEBUG && console.log('GOT dirHandle', dirHandle)
       const zipFiles = await findZipFiles(dirHandle)
+      openFolder.replaceWith(playBtn)
       for (const file of zipFiles) {
         const stack = await readZipFile(dirHandle, file.name)
-        openFolder.remove()
         info.stacks.push(stack)
         info.stacks.sort((a, b) =>
           Object.keys(appState.sorting).indexOf(a.name)
@@ -149,7 +243,7 @@ export function Main() {
     const zip = new JSZip()
     const zipContent = await zip.loadAsync(arrayBuffer)
 
-    // NOTE: The following code is not robust. We expect
+    // NOTE: The following code is brittle. We expect
     // certain patterns to be followed by the stems zip and its contents,
     // so any weird deviation will most likely break something here.
     let stack: Stack | undefined
@@ -167,12 +261,16 @@ export function Main() {
 
       if (!stack) continue
 
-      const name = file.name.split('/')[1].split(' - ').slice(2).join(' - ')
+      const name = file.name.split('/')[1].split(' - ').slice(2).join(' - ').replace('.wav', '')
       const bpm = Number(file.name.split('/')[1].split(' - ')[1].split(' ')[0])
       const kind = file.name.split('/')[1].split(' - ')[3] as StemKind
 
       const arrayBuffer = await file.async('arraybuffer')
       const buffer = await audio.decodeAudioData(arrayBuffer)
+
+      const info = $({
+        isPlaying: false,
+      })
 
       const stem: Stem = {
         stack,
@@ -180,6 +278,8 @@ export function Main() {
         bpm,
         kind,
         buffer,
+        vol: 1,
+        info,
       }
 
       stack.bpm ||= bpm
@@ -211,7 +311,7 @@ export function Main() {
 
   tryReadDir()
 
-  return <main>
+  return <main class="flex flex-col gap-2">
     {openFolder}
     {players}
   </main>
