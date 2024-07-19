@@ -16,6 +16,24 @@ export async function instantiate(module, imports = {}) {
   };
   const { exports } = await WebAssembly.instantiate(module, adaptedImports);
   const memory = exports.memory || imports.env.memory;
+  const adaptedExports = Object.setPrototypeOf({
+    heap_alloc(size) {
+      // as/assembly/alloc/heap_alloc(usize) => usize
+      return exports.heap_alloc(size) >>> 0;
+    },
+    allocI32(length) {
+      // as/assembly/alloc/allocI32(i32) => usize
+      return exports.allocI32(length) >>> 0;
+    },
+    allocU32(length) {
+      // as/assembly/alloc/allocU32(i32) => usize
+      return exports.allocU32(length) >>> 0;
+    },
+    allocF32(length) {
+      // as/assembly/alloc/allocF32(i32) => usize
+      return exports.allocF32(length) >>> 0;
+    },
+  }, exports);
   function __liftString(pointer) {
     if (!pointer) return null;
     const
@@ -27,5 +45,5 @@ export async function instantiate(module, imports = {}) {
     while (end - start > 1024) string += String.fromCharCode(...memoryU16.subarray(start, start += 1024));
     return string + String.fromCharCode(...memoryU16.subarray(start, end));
   }
-  return exports;
+  return adaptedExports;
 }

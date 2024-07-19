@@ -2,14 +2,19 @@
  (type $0 (func (param i32) (result i32)))
  (type $1 (func (param i32 i32)))
  (type $2 (func (param i32)))
- (type $3 (func))
- (type $4 (func (param i32 i32) (result i32)))
+ (type $3 (func (param i32 i32) (result i32)))
+ (type $4 (func))
  (type $5 (func (param i32 i32 i32)))
  (type $6 (func (param f64 f64) (result f64)))
- (type $7 (func (param i32 i32 i32 i32)))
- (type $8 (func (param i32 i32 i64) (result i32)))
+ (type $7 (func (param i32 i32 i64) (result i32)))
+ (type $8 (func (param i32 i32 i32 i32)))
  (type $9 (func (result i32)))
  (import "env" "abort" (func $~lib/builtins/abort (param i32 i32 i32 i32)))
+ (global $~lib/rt/tlsf/ROOT (mut i32) (i32.const 0))
+ (global $~lib/native/ASC_LOW_MEMORY_LIMIT i32 (i32.const 0))
+ (global $~lib/shared/runtime/Runtime.Stub i32 (i32.const 0))
+ (global $~lib/shared/runtime/Runtime.Minimal i32 (i32.const 1))
+ (global $~lib/shared/runtime/Runtime.Incremental i32 (i32.const 2))
  (global $~lib/rt/itcms/total (mut i32) (i32.const 0))
  (global $~lib/rt/itcms/threshold (mut i32) (i32.const 0))
  (global $~lib/rt/itcms/state (mut i32) (i32.const 0))
@@ -18,31 +23,34 @@
  (global $~lib/rt/itcms/iter (mut i32) (i32.const 0))
  (global $~lib/rt/itcms/toSpace (mut i32) (i32.const 0))
  (global $~lib/rt/itcms/white (mut i32) (i32.const 0))
- (global $~lib/shared/runtime/Runtime.Stub i32 (i32.const 0))
- (global $~lib/shared/runtime/Runtime.Minimal i32 (i32.const 1))
- (global $~lib/shared/runtime/Runtime.Incremental i32 (i32.const 2))
  (global $~lib/rt/itcms/fromSpace (mut i32) (i32.const 0))
- (global $~lib/rt/tlsf/ROOT (mut i32) (i32.const 0))
- (global $~lib/native/ASC_LOW_MEMORY_LIMIT i32 (i32.const 0))
- (global $~lib/rt/__rtti_base i32 (i32.const 544))
- (global $~lib/memory/__data_end i32 (i32.const 564))
- (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33332))
- (global $~lib/memory/__heap_base i32 (i32.const 33332))
+ (global $~lib/native/ASC_RUNTIME i32 (i32.const 2))
+ (global $~lib/rt/__rtti_base i32 (i32.const 656))
+ (global $~lib/memory/__data_end i32 (i32.const 688))
+ (global $~lib/memory/__stack_pointer (mut i32) (i32.const 33456))
+ (global $~lib/memory/__heap_base i32 (i32.const 33456))
  (memory $0 5000 5000 shared)
  (data $0 (i32.const 12) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00(\00\00\00A\00l\00l\00o\00c\00a\00t\00i\00o\00n\00 \00t\00o\00o\00 \00l\00a\00r\00g\00e\00\00\00\00\00")
- (data $1 (i32.const 76) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00 \00\00\00~\00l\00i\00b\00/\00r\00t\00/\00i\00t\00c\00m\00s\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $2 (i32.const 144) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $3 (i32.const 176) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $4 (i32.const 204) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00$\00\00\00I\00n\00d\00e\00x\00 \00o\00u\00t\00 \00o\00f\00 \00r\00a\00n\00g\00e\00\00\00\00\00\00\00\00\00")
- (data $5 (i32.const 268) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\14\00\00\00~\00l\00i\00b\00/\00r\00t\00.\00t\00s\00\00\00\00\00\00\00\00\00")
- (data $6 (i32.const 320) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $7 (i32.const 348) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1e\00\00\00~\00l\00i\00b\00/\00r\00t\00/\00t\00l\00s\00f\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
- (data $8 (i32.const 412) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00*\00\00\00O\00b\00j\00e\00c\00t\00 \00a\00l\00r\00e\00a\00d\00y\00 \00p\00i\00n\00n\00e\00d\00\00\00")
- (data $9 (i32.const 476) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00(\00\00\00O\00b\00j\00e\00c\00t\00 \00i\00s\00 \00n\00o\00t\00 \00p\00i\00n\00n\00e\00d\00\00\00\00\00")
- (data $10 (i32.const 544) "\04\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00")
+ (data $1 (i32.const 76) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1e\00\00\00~\00l\00i\00b\00/\00r\00t\00/\00t\00l\00s\00f\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $2 (i32.const 140) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\1c\00\00\00I\00n\00v\00a\00l\00i\00d\00 \00l\00e\00n\00g\00t\00h\00")
+ (data $3 (i32.const 188) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00&\00\00\00~\00l\00i\00b\00/\00s\00t\00a\00t\00i\00c\00a\00r\00r\00a\00y\00.\00t\00s\00\00\00\00\00\00\00")
+ (data $4 (i32.const 252) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00 \00\00\00~\00l\00i\00b\00/\00r\00t\00/\00i\00t\00c\00m\00s\00.\00t\00s\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $5 (i32.const 320) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $6 (i32.const 352) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $7 (i32.const 380) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00$\00\00\00I\00n\00d\00e\00x\00 \00o\00u\00t\00 \00o\00f\00 \00r\00a\00n\00g\00e\00\00\00\00\00\00\00\00\00")
+ (data $8 (i32.const 444) ",\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00\14\00\00\00~\00l\00i\00b\00/\00r\00t\00.\00t\00s\00\00\00\00\00\00\00\00\00")
+ (data $9 (i32.const 496) "\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00\00")
+ (data $10 (i32.const 524) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00*\00\00\00O\00b\00j\00e\00c\00t\00 \00a\00l\00r\00e\00a\00d\00y\00 \00p\00i\00n\00n\00e\00d\00\00\00")
+ (data $11 (i32.const 588) "<\00\00\00\00\00\00\00\00\00\00\00\02\00\00\00(\00\00\00O\00b\00j\00e\00c\00t\00 \00i\00s\00 \00n\00o\00t\00 \00p\00i\00n\00n\00e\00d\00\00\00\00\00")
+ (data $12 (i32.const 656) "\07\00\00\00 \00\00\00 \00\00\00 \00\00\00\00\00\00\00$\t\00\00$\01\00\00$\19\00\00")
  (table $0 1 1 funcref)
  (elem $0 (i32.const 1))
  (export "add" (func $as/assembly/seq/index/add))
+ (export "heap_alloc" (func $as/assembly/alloc/heap_alloc))
+ (export "heap_free" (func $as/assembly/alloc/heap_free))
+ (export "allocI32" (func $as/assembly/alloc/allocI32))
+ (export "allocU32" (func $as/assembly/alloc/allocU32))
+ (export "allocF32" (func $as/assembly/alloc/allocF32))
  (export "__new" (func $~lib/rt/itcms/__new))
  (export "__pin" (func $~lib/rt/itcms/__pin))
  (export "__unpin" (func $~lib/rt/itcms/__unpin))
@@ -56,309 +64,14 @@
   f64.add
   return
  )
- (func $~lib/rt/itcms/Object#set:nextWithColor (param $0 i32) (param $1 i32)
-  local.get $0
-  local.get $1
-  i32.store offset=4
- )
- (func $~lib/rt/itcms/Object#set:prev (param $0 i32) (param $1 i32)
-  local.get $0
-  local.get $1
-  i32.store offset=8
- )
- (func $~lib/rt/itcms/initLazy (param $0 i32) (result i32)
-  local.get $0
-  local.get $0
-  call $~lib/rt/itcms/Object#set:nextWithColor
-  local.get $0
-  local.get $0
-  call $~lib/rt/itcms/Object#set:prev
-  local.get $0
-  return
- )
- (func $~lib/rt/itcms/Object#get:nextWithColor (param $0 i32) (result i32)
-  local.get $0
-  i32.load offset=4
- )
- (func $~lib/rt/itcms/Object#get:next (param $0 i32) (result i32)
-  local.get $0
-  call $~lib/rt/itcms/Object#get:nextWithColor
-  i32.const 3
-  i32.const -1
-  i32.xor
-  i32.and
-  return
- )
- (func $~lib/rt/itcms/Object#get:color (param $0 i32) (result i32)
-  local.get $0
-  call $~lib/rt/itcms/Object#get:nextWithColor
-  i32.const 3
-  i32.and
-  return
- )
- (func $~lib/rt/itcms/visitRoots (param $0 i32)
-  (local $1 i32)
-  (local $2 i32)
-  local.get $0
-  call $~lib/rt/__visit_globals
-  global.get $~lib/rt/itcms/pinSpace
-  local.set $1
-  local.get $1
-  call $~lib/rt/itcms/Object#get:next
-  local.set $2
-  loop $while-continue|0
-   local.get $2
-   local.get $1
-   i32.ne
-   if
-    i32.const 1
-    drop
-    local.get $2
-    call $~lib/rt/itcms/Object#get:color
-    i32.const 3
-    i32.eq
-    drop
-    local.get $2
-    i32.const 20
-    i32.add
-    local.get $0
-    call $~lib/rt/__visit_members
-    local.get $2
-    call $~lib/rt/itcms/Object#get:next
-    local.set $2
-    br $while-continue|0
-   end
-  end
- )
- (func $~lib/rt/itcms/Object#set:color (param $0 i32) (param $1 i32)
-  local.get $0
-  local.get $0
-  call $~lib/rt/itcms/Object#get:nextWithColor
-  i32.const 3
-  i32.const -1
-  i32.xor
-  i32.and
-  local.get $1
-  i32.or
-  call $~lib/rt/itcms/Object#set:nextWithColor
- )
- (func $~lib/rt/itcms/Object#get:prev (param $0 i32) (result i32)
-  local.get $0
-  i32.load offset=8
- )
- (func $~lib/rt/itcms/Object#set:next (param $0 i32) (param $1 i32)
-  local.get $0
-  local.get $1
-  local.get $0
-  call $~lib/rt/itcms/Object#get:nextWithColor
-  i32.const 3
-  i32.and
-  i32.or
-  call $~lib/rt/itcms/Object#set:nextWithColor
- )
- (func $~lib/rt/itcms/Object#unlink (param $0 i32)
-  (local $1 i32)
-  (local $2 i32)
-  local.get $0
-  call $~lib/rt/itcms/Object#get:next
-  local.set $1
-  local.get $1
-  i32.const 0
-  i32.eq
-  if
-   i32.const 1
-   drop
-   local.get $0
-   call $~lib/rt/itcms/Object#get:prev
-   i32.const 0
-   i32.eq
-   if (result i32)
-    local.get $0
-    global.get $~lib/memory/__heap_base
-    i32.lt_u
-   else
-    i32.const 0
-   end
-   drop
-   return
-  end
-  local.get $0
-  call $~lib/rt/itcms/Object#get:prev
-  local.set $2
-  i32.const 1
-  drop
-  local.get $2
-  drop
-  local.get $1
-  local.get $2
-  call $~lib/rt/itcms/Object#set:prev
-  local.get $2
-  local.get $1
-  call $~lib/rt/itcms/Object#set:next
- )
- (func $~lib/rt/itcms/Object#get:rtId (param $0 i32) (result i32)
-  local.get $0
-  i32.load offset=12
- )
- (func $~lib/shared/typeinfo/Typeinfo#get:flags (param $0 i32) (result i32)
-  local.get $0
-  i32.load
- )
- (func $~lib/rt/__typeinfo (param $0 i32) (result i32)
-  (local $1 i32)
-  global.get $~lib/rt/__rtti_base
-  local.set $1
-  local.get $0
-  local.get $1
-  i32.load
-  i32.gt_u
-  if
-   i32.const 224
-   i32.const 288
-   i32.const 21
-   i32.const 28
-   call $~lib/builtins/abort
-   unreachable
-  end
-  local.get $1
-  i32.const 4
-  i32.add
-  local.get $0
-  i32.const 4
-  i32.mul
-  i32.add
-  call $~lib/shared/typeinfo/Typeinfo#get:flags
-  return
- )
- (func $~lib/rt/itcms/Object#get:isPointerfree (param $0 i32) (result i32)
-  (local $1 i32)
-  local.get $0
-  call $~lib/rt/itcms/Object#get:rtId
-  local.set $1
-  local.get $1
-  i32.const 2
-  i32.le_u
-  if (result i32)
-   i32.const 1
-  else
-   local.get $1
-   call $~lib/rt/__typeinfo
-   i32.const 32
-   i32.and
-   i32.const 0
-   i32.ne
-  end
-  return
- )
- (func $~lib/rt/itcms/Object#linkTo (param $0 i32) (param $1 i32) (param $2 i32)
-  (local $3 i32)
-  local.get $1
-  call $~lib/rt/itcms/Object#get:prev
-  local.set $3
-  local.get $0
-  local.get $1
-  local.get $2
-  i32.or
-  call $~lib/rt/itcms/Object#set:nextWithColor
-  local.get $0
-  local.get $3
-  call $~lib/rt/itcms/Object#set:prev
-  local.get $3
-  local.get $0
-  call $~lib/rt/itcms/Object#set:next
-  local.get $1
-  local.get $0
-  call $~lib/rt/itcms/Object#set:prev
- )
- (func $~lib/rt/itcms/Object#makeGray (param $0 i32)
-  local.get $0
-  global.get $~lib/rt/itcms/iter
-  i32.eq
-  if
-   local.get $0
-   call $~lib/rt/itcms/Object#get:prev
-   global.set $~lib/rt/itcms/iter
-  end
-  local.get $0
-  call $~lib/rt/itcms/Object#unlink
-  local.get $0
-  global.get $~lib/rt/itcms/toSpace
-  local.get $0
-  call $~lib/rt/itcms/Object#get:isPointerfree
-  if (result i32)
-   global.get $~lib/rt/itcms/white
-   i32.eqz
-  else
-   i32.const 2
-  end
-  call $~lib/rt/itcms/Object#linkTo
- )
- (func $~lib/rt/itcms/__visit (param $0 i32) (param $1 i32)
-  (local $2 i32)
-  local.get $0
-  i32.eqz
-  if
-   return
-  end
-  local.get $0
-  i32.const 20
-  i32.sub
-  local.set $2
-  i32.const 0
-  drop
-  local.get $2
-  call $~lib/rt/itcms/Object#get:color
-  global.get $~lib/rt/itcms/white
-  i32.eq
-  if
-   local.get $2
-   call $~lib/rt/itcms/Object#makeGray
-   global.get $~lib/rt/itcms/visitCount
-   i32.const 1
-   i32.add
-   global.set $~lib/rt/itcms/visitCount
-  end
- )
- (func $~lib/rt/itcms/visitStack (param $0 i32)
-  (local $1 i32)
-  global.get $~lib/memory/__stack_pointer
-  local.set $1
-  loop $while-continue|0
-   local.get $1
-   global.get $~lib/memory/__heap_base
-   i32.lt_u
-   if
-    local.get $1
-    i32.load
-    local.get $0
-    call $~lib/rt/itcms/__visit
-    local.get $1
-    i32.const 4
-    i32.add
-    local.set $1
-    br $while-continue|0
-   end
-  end
- )
- (func $~lib/rt/common/BLOCK#get:mmInfo (param $0 i32) (result i32)
-  local.get $0
-  i32.load
- )
- (func $~lib/rt/itcms/Object#get:size (param $0 i32) (result i32)
-  i32.const 4
-  local.get $0
-  call $~lib/rt/common/BLOCK#get:mmInfo
-  i32.const 3
-  i32.const -1
-  i32.xor
-  i32.and
-  i32.add
-  return
- )
  (func $~lib/rt/tlsf/Root#set:flMap (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
   i32.store
+ )
+ (func $~lib/rt/common/BLOCK#get:mmInfo (param $0 i32) (result i32)
+  local.get $0
+  i32.load
  )
  (func $~lib/rt/common/BLOCK#set:mmInfo (param $0 i32) (param $1 i32)
   local.get $0
@@ -1206,321 +919,6 @@
   local.get $3
   global.set $~lib/rt/tlsf/ROOT
  )
- (func $~lib/rt/tlsf/checkUsedBlock (param $0 i32) (result i32)
-  (local $1 i32)
-  local.get $0
-  i32.const 4
-  i32.sub
-  local.set $1
-  local.get $0
-  i32.const 0
-  i32.ne
-  if (result i32)
-   local.get $0
-   i32.const 15
-   i32.and
-   i32.eqz
-  else
-   i32.const 0
-  end
-  if (result i32)
-   local.get $1
-   call $~lib/rt/common/BLOCK#get:mmInfo
-   i32.const 1
-   i32.and
-   i32.eqz
-  else
-   i32.const 0
-  end
-  drop
-  local.get $1
-  return
- )
- (func $~lib/rt/tlsf/freeBlock (param $0 i32) (param $1 i32)
-  i32.const 0
-  drop
-  local.get $1
-  local.get $1
-  call $~lib/rt/common/BLOCK#get:mmInfo
-  i32.const 1
-  i32.or
-  call $~lib/rt/common/BLOCK#set:mmInfo
-  local.get $0
-  local.get $1
-  call $~lib/rt/tlsf/insertBlock
- )
- (func $~lib/rt/tlsf/__free (param $0 i32)
-  local.get $0
-  global.get $~lib/memory/__heap_base
-  i32.lt_u
-  if
-   return
-  end
-  global.get $~lib/rt/tlsf/ROOT
-  i32.eqz
-  if
-   call $~lib/rt/tlsf/initialize
-  end
-  global.get $~lib/rt/tlsf/ROOT
-  local.get $0
-  call $~lib/rt/tlsf/checkUsedBlock
-  call $~lib/rt/tlsf/freeBlock
- )
- (func $~lib/rt/itcms/free (param $0 i32)
-  local.get $0
-  global.get $~lib/memory/__heap_base
-  i32.lt_u
-  if
-   local.get $0
-   i32.const 0
-   call $~lib/rt/itcms/Object#set:nextWithColor
-   local.get $0
-   i32.const 0
-   call $~lib/rt/itcms/Object#set:prev
-  else
-   global.get $~lib/rt/itcms/total
-   local.get $0
-   call $~lib/rt/itcms/Object#get:size
-   i32.sub
-   global.set $~lib/rt/itcms/total
-   i32.const 0
-   drop
-   local.get $0
-   i32.const 4
-   i32.add
-   call $~lib/rt/tlsf/__free
-  end
- )
- (func $~lib/rt/itcms/step (result i32)
-  (local $0 i32)
-  (local $1 i32)
-  (local $2 i32)
-  (local $3 i32)
-  block $break|0
-   block $case2|0
-    block $case1|0
-     block $case0|0
-      global.get $~lib/rt/itcms/state
-      local.set $1
-      local.get $1
-      i32.const 0
-      i32.eq
-      br_if $case0|0
-      local.get $1
-      i32.const 1
-      i32.eq
-      br_if $case1|0
-      local.get $1
-      i32.const 2
-      i32.eq
-      br_if $case2|0
-      br $break|0
-     end
-     i32.const 1
-     global.set $~lib/rt/itcms/state
-     i32.const 0
-     global.set $~lib/rt/itcms/visitCount
-     i32.const 0
-     call $~lib/rt/itcms/visitRoots
-     global.get $~lib/rt/itcms/toSpace
-     global.set $~lib/rt/itcms/iter
-     global.get $~lib/rt/itcms/visitCount
-     i32.const 1
-     i32.mul
-     return
-    end
-    global.get $~lib/rt/itcms/white
-    i32.eqz
-    local.set $2
-    global.get $~lib/rt/itcms/iter
-    call $~lib/rt/itcms/Object#get:next
-    local.set $0
-    loop $while-continue|1
-     local.get $0
-     global.get $~lib/rt/itcms/toSpace
-     i32.ne
-     if
-      local.get $0
-      global.set $~lib/rt/itcms/iter
-      local.get $0
-      call $~lib/rt/itcms/Object#get:color
-      local.get $2
-      i32.ne
-      if
-       local.get $0
-       local.get $2
-       call $~lib/rt/itcms/Object#set:color
-       i32.const 0
-       global.set $~lib/rt/itcms/visitCount
-       local.get $0
-       i32.const 20
-       i32.add
-       i32.const 0
-       call $~lib/rt/__visit_members
-       global.get $~lib/rt/itcms/visitCount
-       i32.const 1
-       i32.mul
-       return
-      end
-      local.get $0
-      call $~lib/rt/itcms/Object#get:next
-      local.set $0
-      br $while-continue|1
-     end
-    end
-    i32.const 0
-    global.set $~lib/rt/itcms/visitCount
-    i32.const 0
-    call $~lib/rt/itcms/visitRoots
-    global.get $~lib/rt/itcms/iter
-    call $~lib/rt/itcms/Object#get:next
-    local.set $0
-    local.get $0
-    global.get $~lib/rt/itcms/toSpace
-    i32.eq
-    if
-     i32.const 0
-     call $~lib/rt/itcms/visitStack
-     global.get $~lib/rt/itcms/iter
-     call $~lib/rt/itcms/Object#get:next
-     local.set $0
-     loop $while-continue|2
-      local.get $0
-      global.get $~lib/rt/itcms/toSpace
-      i32.ne
-      if
-       local.get $0
-       call $~lib/rt/itcms/Object#get:color
-       local.get $2
-       i32.ne
-       if
-        local.get $0
-        local.get $2
-        call $~lib/rt/itcms/Object#set:color
-        local.get $0
-        i32.const 20
-        i32.add
-        i32.const 0
-        call $~lib/rt/__visit_members
-       end
-       local.get $0
-       call $~lib/rt/itcms/Object#get:next
-       local.set $0
-       br $while-continue|2
-      end
-     end
-     global.get $~lib/rt/itcms/fromSpace
-     local.set $3
-     global.get $~lib/rt/itcms/toSpace
-     global.set $~lib/rt/itcms/fromSpace
-     local.get $3
-     global.set $~lib/rt/itcms/toSpace
-     local.get $2
-     global.set $~lib/rt/itcms/white
-     local.get $3
-     call $~lib/rt/itcms/Object#get:next
-     global.set $~lib/rt/itcms/iter
-     i32.const 2
-     global.set $~lib/rt/itcms/state
-    end
-    global.get $~lib/rt/itcms/visitCount
-    i32.const 1
-    i32.mul
-    return
-   end
-   global.get $~lib/rt/itcms/iter
-   local.set $0
-   local.get $0
-   global.get $~lib/rt/itcms/toSpace
-   i32.ne
-   if
-    local.get $0
-    call $~lib/rt/itcms/Object#get:next
-    global.set $~lib/rt/itcms/iter
-    i32.const 1
-    drop
-    local.get $0
-    call $~lib/rt/itcms/Object#get:color
-    global.get $~lib/rt/itcms/white
-    i32.eqz
-    i32.eq
-    drop
-    local.get $0
-    call $~lib/rt/itcms/free
-    i32.const 10
-    return
-   end
-   global.get $~lib/rt/itcms/toSpace
-   global.get $~lib/rt/itcms/toSpace
-   call $~lib/rt/itcms/Object#set:nextWithColor
-   global.get $~lib/rt/itcms/toSpace
-   global.get $~lib/rt/itcms/toSpace
-   call $~lib/rt/itcms/Object#set:prev
-   i32.const 0
-   global.set $~lib/rt/itcms/state
-   br $break|0
-  end
-  i32.const 0
-  return
- )
- (func $~lib/rt/itcms/interrupt
-  (local $0 i32)
-  i32.const 0
-  drop
-  i32.const 0
-  drop
-  i32.const 1024
-  i32.const 200
-  i32.mul
-  i32.const 100
-  i32.div_u
-  local.set $0
-  loop $do-loop|0
-   local.get $0
-   call $~lib/rt/itcms/step
-   i32.sub
-   local.set $0
-   global.get $~lib/rt/itcms/state
-   i32.const 0
-   i32.eq
-   if
-    i32.const 0
-    drop
-    global.get $~lib/rt/itcms/total
-    i64.extend_i32_u
-    i32.const 200
-    i64.extend_i32_u
-    i64.mul
-    i64.const 100
-    i64.div_u
-    i32.wrap_i64
-    i32.const 1024
-    i32.add
-    global.set $~lib/rt/itcms/threshold
-    i32.const 0
-    drop
-    return
-   end
-   local.get $0
-   i32.const 0
-   i32.gt_s
-   br_if $do-loop|0
-  end
-  i32.const 0
-  drop
-  global.get $~lib/rt/itcms/total
-  i32.const 1024
-  global.get $~lib/rt/itcms/total
-  global.get $~lib/rt/itcms/threshold
-  i32.sub
-  i32.const 1024
-  i32.lt_u
-  i32.mul
-  i32.add
-  global.set $~lib/rt/itcms/threshold
-  i32.const 0
-  drop
- )
  (func $~lib/rt/tlsf/computeSize (param $0 i32) (result i32)
   local.get $0
   i32.const 12
@@ -1548,7 +946,7 @@
   i32.gt_u
   if
    i32.const 32
-   i32.const 368
+   i32.const 96
    i32.const 461
    i32.const 29
    call $~lib/builtins/abort
@@ -2004,6 +1402,634 @@
   i32.add
   return
  )
+ (func $~lib/memory/heap.alloc (param $0 i32) (result i32)
+  local.get $0
+  call $~lib/rt/tlsf/__alloc
+  return
+ )
+ (func $as/assembly/alloc/heap_alloc (param $0 i32) (result i32)
+  local.get $0
+  call $~lib/memory/heap.alloc
+  return
+ )
+ (func $~lib/rt/tlsf/checkUsedBlock (param $0 i32) (result i32)
+  (local $1 i32)
+  local.get $0
+  i32.const 4
+  i32.sub
+  local.set $1
+  local.get $0
+  i32.const 0
+  i32.ne
+  if (result i32)
+   local.get $0
+   i32.const 15
+   i32.and
+   i32.eqz
+  else
+   i32.const 0
+  end
+  if (result i32)
+   local.get $1
+   call $~lib/rt/common/BLOCK#get:mmInfo
+   i32.const 1
+   i32.and
+   i32.eqz
+  else
+   i32.const 0
+  end
+  drop
+  local.get $1
+  return
+ )
+ (func $~lib/rt/tlsf/freeBlock (param $0 i32) (param $1 i32)
+  i32.const 0
+  drop
+  local.get $1
+  local.get $1
+  call $~lib/rt/common/BLOCK#get:mmInfo
+  i32.const 1
+  i32.or
+  call $~lib/rt/common/BLOCK#set:mmInfo
+  local.get $0
+  local.get $1
+  call $~lib/rt/tlsf/insertBlock
+ )
+ (func $~lib/rt/tlsf/__free (param $0 i32)
+  local.get $0
+  global.get $~lib/memory/__heap_base
+  i32.lt_u
+  if
+   return
+  end
+  global.get $~lib/rt/tlsf/ROOT
+  i32.eqz
+  if
+   call $~lib/rt/tlsf/initialize
+  end
+  global.get $~lib/rt/tlsf/ROOT
+  local.get $0
+  call $~lib/rt/tlsf/checkUsedBlock
+  call $~lib/rt/tlsf/freeBlock
+ )
+ (func $~lib/memory/heap.free (param $0 i32)
+  local.get $0
+  call $~lib/rt/tlsf/__free
+ )
+ (func $as/assembly/alloc/heap_free (param $0 i32)
+  local.get $0
+  call $~lib/memory/heap.free
+ )
+ (func $~lib/rt/itcms/Object#set:nextWithColor (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  i32.store offset=4
+ )
+ (func $~lib/rt/itcms/Object#set:prev (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  i32.store offset=8
+ )
+ (func $~lib/rt/itcms/initLazy (param $0 i32) (result i32)
+  local.get $0
+  local.get $0
+  call $~lib/rt/itcms/Object#set:nextWithColor
+  local.get $0
+  local.get $0
+  call $~lib/rt/itcms/Object#set:prev
+  local.get $0
+  return
+ )
+ (func $~lib/rt/itcms/Object#get:nextWithColor (param $0 i32) (result i32)
+  local.get $0
+  i32.load offset=4
+ )
+ (func $~lib/rt/itcms/Object#get:next (param $0 i32) (result i32)
+  local.get $0
+  call $~lib/rt/itcms/Object#get:nextWithColor
+  i32.const 3
+  i32.const -1
+  i32.xor
+  i32.and
+  return
+ )
+ (func $~lib/rt/itcms/Object#get:color (param $0 i32) (result i32)
+  local.get $0
+  call $~lib/rt/itcms/Object#get:nextWithColor
+  i32.const 3
+  i32.and
+  return
+ )
+ (func $~lib/rt/itcms/visitRoots (param $0 i32)
+  (local $1 i32)
+  (local $2 i32)
+  local.get $0
+  call $~lib/rt/__visit_globals
+  global.get $~lib/rt/itcms/pinSpace
+  local.set $1
+  local.get $1
+  call $~lib/rt/itcms/Object#get:next
+  local.set $2
+  loop $while-continue|0
+   local.get $2
+   local.get $1
+   i32.ne
+   if
+    i32.const 1
+    drop
+    local.get $2
+    call $~lib/rt/itcms/Object#get:color
+    i32.const 3
+    i32.eq
+    drop
+    local.get $2
+    i32.const 20
+    i32.add
+    local.get $0
+    call $~lib/rt/__visit_members
+    local.get $2
+    call $~lib/rt/itcms/Object#get:next
+    local.set $2
+    br $while-continue|0
+   end
+  end
+ )
+ (func $~lib/rt/itcms/Object#set:color (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $0
+  call $~lib/rt/itcms/Object#get:nextWithColor
+  i32.const 3
+  i32.const -1
+  i32.xor
+  i32.and
+  local.get $1
+  i32.or
+  call $~lib/rt/itcms/Object#set:nextWithColor
+ )
+ (func $~lib/rt/itcms/Object#get:prev (param $0 i32) (result i32)
+  local.get $0
+  i32.load offset=8
+ )
+ (func $~lib/rt/itcms/Object#set:next (param $0 i32) (param $1 i32)
+  local.get $0
+  local.get $1
+  local.get $0
+  call $~lib/rt/itcms/Object#get:nextWithColor
+  i32.const 3
+  i32.and
+  i32.or
+  call $~lib/rt/itcms/Object#set:nextWithColor
+ )
+ (func $~lib/rt/itcms/Object#unlink (param $0 i32)
+  (local $1 i32)
+  (local $2 i32)
+  local.get $0
+  call $~lib/rt/itcms/Object#get:next
+  local.set $1
+  local.get $1
+  i32.const 0
+  i32.eq
+  if
+   i32.const 1
+   drop
+   local.get $0
+   call $~lib/rt/itcms/Object#get:prev
+   i32.const 0
+   i32.eq
+   if (result i32)
+    local.get $0
+    global.get $~lib/memory/__heap_base
+    i32.lt_u
+   else
+    i32.const 0
+   end
+   drop
+   return
+  end
+  local.get $0
+  call $~lib/rt/itcms/Object#get:prev
+  local.set $2
+  i32.const 1
+  drop
+  local.get $2
+  drop
+  local.get $1
+  local.get $2
+  call $~lib/rt/itcms/Object#set:prev
+  local.get $2
+  local.get $1
+  call $~lib/rt/itcms/Object#set:next
+ )
+ (func $~lib/rt/itcms/Object#get:rtId (param $0 i32) (result i32)
+  local.get $0
+  i32.load offset=12
+ )
+ (func $~lib/shared/typeinfo/Typeinfo#get:flags (param $0 i32) (result i32)
+  local.get $0
+  i32.load
+ )
+ (func $~lib/rt/__typeinfo (param $0 i32) (result i32)
+  (local $1 i32)
+  global.get $~lib/rt/__rtti_base
+  local.set $1
+  local.get $0
+  local.get $1
+  i32.load
+  i32.gt_u
+  if
+   i32.const 400
+   i32.const 464
+   i32.const 21
+   i32.const 28
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $1
+  i32.const 4
+  i32.add
+  local.get $0
+  i32.const 4
+  i32.mul
+  i32.add
+  call $~lib/shared/typeinfo/Typeinfo#get:flags
+  return
+ )
+ (func $~lib/rt/itcms/Object#get:isPointerfree (param $0 i32) (result i32)
+  (local $1 i32)
+  local.get $0
+  call $~lib/rt/itcms/Object#get:rtId
+  local.set $1
+  local.get $1
+  i32.const 2
+  i32.le_u
+  if (result i32)
+   i32.const 1
+  else
+   local.get $1
+   call $~lib/rt/__typeinfo
+   i32.const 32
+   i32.and
+   i32.const 0
+   i32.ne
+  end
+  return
+ )
+ (func $~lib/rt/itcms/Object#linkTo (param $0 i32) (param $1 i32) (param $2 i32)
+  (local $3 i32)
+  local.get $1
+  call $~lib/rt/itcms/Object#get:prev
+  local.set $3
+  local.get $0
+  local.get $1
+  local.get $2
+  i32.or
+  call $~lib/rt/itcms/Object#set:nextWithColor
+  local.get $0
+  local.get $3
+  call $~lib/rt/itcms/Object#set:prev
+  local.get $3
+  local.get $0
+  call $~lib/rt/itcms/Object#set:next
+  local.get $1
+  local.get $0
+  call $~lib/rt/itcms/Object#set:prev
+ )
+ (func $~lib/rt/itcms/Object#makeGray (param $0 i32)
+  local.get $0
+  global.get $~lib/rt/itcms/iter
+  i32.eq
+  if
+   local.get $0
+   call $~lib/rt/itcms/Object#get:prev
+   global.set $~lib/rt/itcms/iter
+  end
+  local.get $0
+  call $~lib/rt/itcms/Object#unlink
+  local.get $0
+  global.get $~lib/rt/itcms/toSpace
+  local.get $0
+  call $~lib/rt/itcms/Object#get:isPointerfree
+  if (result i32)
+   global.get $~lib/rt/itcms/white
+   i32.eqz
+  else
+   i32.const 2
+  end
+  call $~lib/rt/itcms/Object#linkTo
+ )
+ (func $~lib/rt/itcms/__visit (param $0 i32) (param $1 i32)
+  (local $2 i32)
+  local.get $0
+  i32.eqz
+  if
+   return
+  end
+  local.get $0
+  i32.const 20
+  i32.sub
+  local.set $2
+  i32.const 0
+  drop
+  local.get $2
+  call $~lib/rt/itcms/Object#get:color
+  global.get $~lib/rt/itcms/white
+  i32.eq
+  if
+   local.get $2
+   call $~lib/rt/itcms/Object#makeGray
+   global.get $~lib/rt/itcms/visitCount
+   i32.const 1
+   i32.add
+   global.set $~lib/rt/itcms/visitCount
+  end
+ )
+ (func $~lib/rt/itcms/visitStack (param $0 i32)
+  (local $1 i32)
+  global.get $~lib/memory/__stack_pointer
+  local.set $1
+  loop $while-continue|0
+   local.get $1
+   global.get $~lib/memory/__heap_base
+   i32.lt_u
+   if
+    local.get $1
+    i32.load
+    local.get $0
+    call $~lib/rt/itcms/__visit
+    local.get $1
+    i32.const 4
+    i32.add
+    local.set $1
+    br $while-continue|0
+   end
+  end
+ )
+ (func $~lib/rt/itcms/Object#get:size (param $0 i32) (result i32)
+  i32.const 4
+  local.get $0
+  call $~lib/rt/common/BLOCK#get:mmInfo
+  i32.const 3
+  i32.const -1
+  i32.xor
+  i32.and
+  i32.add
+  return
+ )
+ (func $~lib/rt/itcms/free (param $0 i32)
+  local.get $0
+  global.get $~lib/memory/__heap_base
+  i32.lt_u
+  if
+   local.get $0
+   i32.const 0
+   call $~lib/rt/itcms/Object#set:nextWithColor
+   local.get $0
+   i32.const 0
+   call $~lib/rt/itcms/Object#set:prev
+  else
+   global.get $~lib/rt/itcms/total
+   local.get $0
+   call $~lib/rt/itcms/Object#get:size
+   i32.sub
+   global.set $~lib/rt/itcms/total
+   i32.const 0
+   drop
+   local.get $0
+   i32.const 4
+   i32.add
+   call $~lib/rt/tlsf/__free
+  end
+ )
+ (func $~lib/rt/itcms/step (result i32)
+  (local $0 i32)
+  (local $1 i32)
+  (local $2 i32)
+  (local $3 i32)
+  block $break|0
+   block $case2|0
+    block $case1|0
+     block $case0|0
+      global.get $~lib/rt/itcms/state
+      local.set $1
+      local.get $1
+      i32.const 0
+      i32.eq
+      br_if $case0|0
+      local.get $1
+      i32.const 1
+      i32.eq
+      br_if $case1|0
+      local.get $1
+      i32.const 2
+      i32.eq
+      br_if $case2|0
+      br $break|0
+     end
+     i32.const 1
+     global.set $~lib/rt/itcms/state
+     i32.const 0
+     global.set $~lib/rt/itcms/visitCount
+     i32.const 0
+     call $~lib/rt/itcms/visitRoots
+     global.get $~lib/rt/itcms/toSpace
+     global.set $~lib/rt/itcms/iter
+     global.get $~lib/rt/itcms/visitCount
+     i32.const 1
+     i32.mul
+     return
+    end
+    global.get $~lib/rt/itcms/white
+    i32.eqz
+    local.set $2
+    global.get $~lib/rt/itcms/iter
+    call $~lib/rt/itcms/Object#get:next
+    local.set $0
+    loop $while-continue|1
+     local.get $0
+     global.get $~lib/rt/itcms/toSpace
+     i32.ne
+     if
+      local.get $0
+      global.set $~lib/rt/itcms/iter
+      local.get $0
+      call $~lib/rt/itcms/Object#get:color
+      local.get $2
+      i32.ne
+      if
+       local.get $0
+       local.get $2
+       call $~lib/rt/itcms/Object#set:color
+       i32.const 0
+       global.set $~lib/rt/itcms/visitCount
+       local.get $0
+       i32.const 20
+       i32.add
+       i32.const 0
+       call $~lib/rt/__visit_members
+       global.get $~lib/rt/itcms/visitCount
+       i32.const 1
+       i32.mul
+       return
+      end
+      local.get $0
+      call $~lib/rt/itcms/Object#get:next
+      local.set $0
+      br $while-continue|1
+     end
+    end
+    i32.const 0
+    global.set $~lib/rt/itcms/visitCount
+    i32.const 0
+    call $~lib/rt/itcms/visitRoots
+    global.get $~lib/rt/itcms/iter
+    call $~lib/rt/itcms/Object#get:next
+    local.set $0
+    local.get $0
+    global.get $~lib/rt/itcms/toSpace
+    i32.eq
+    if
+     i32.const 0
+     call $~lib/rt/itcms/visitStack
+     global.get $~lib/rt/itcms/iter
+     call $~lib/rt/itcms/Object#get:next
+     local.set $0
+     loop $while-continue|2
+      local.get $0
+      global.get $~lib/rt/itcms/toSpace
+      i32.ne
+      if
+       local.get $0
+       call $~lib/rt/itcms/Object#get:color
+       local.get $2
+       i32.ne
+       if
+        local.get $0
+        local.get $2
+        call $~lib/rt/itcms/Object#set:color
+        local.get $0
+        i32.const 20
+        i32.add
+        i32.const 0
+        call $~lib/rt/__visit_members
+       end
+       local.get $0
+       call $~lib/rt/itcms/Object#get:next
+       local.set $0
+       br $while-continue|2
+      end
+     end
+     global.get $~lib/rt/itcms/fromSpace
+     local.set $3
+     global.get $~lib/rt/itcms/toSpace
+     global.set $~lib/rt/itcms/fromSpace
+     local.get $3
+     global.set $~lib/rt/itcms/toSpace
+     local.get $2
+     global.set $~lib/rt/itcms/white
+     local.get $3
+     call $~lib/rt/itcms/Object#get:next
+     global.set $~lib/rt/itcms/iter
+     i32.const 2
+     global.set $~lib/rt/itcms/state
+    end
+    global.get $~lib/rt/itcms/visitCount
+    i32.const 1
+    i32.mul
+    return
+   end
+   global.get $~lib/rt/itcms/iter
+   local.set $0
+   local.get $0
+   global.get $~lib/rt/itcms/toSpace
+   i32.ne
+   if
+    local.get $0
+    call $~lib/rt/itcms/Object#get:next
+    global.set $~lib/rt/itcms/iter
+    i32.const 1
+    drop
+    local.get $0
+    call $~lib/rt/itcms/Object#get:color
+    global.get $~lib/rt/itcms/white
+    i32.eqz
+    i32.eq
+    drop
+    local.get $0
+    call $~lib/rt/itcms/free
+    i32.const 10
+    return
+   end
+   global.get $~lib/rt/itcms/toSpace
+   global.get $~lib/rt/itcms/toSpace
+   call $~lib/rt/itcms/Object#set:nextWithColor
+   global.get $~lib/rt/itcms/toSpace
+   global.get $~lib/rt/itcms/toSpace
+   call $~lib/rt/itcms/Object#set:prev
+   i32.const 0
+   global.set $~lib/rt/itcms/state
+   br $break|0
+  end
+  i32.const 0
+  return
+ )
+ (func $~lib/rt/itcms/interrupt
+  (local $0 i32)
+  i32.const 0
+  drop
+  i32.const 0
+  drop
+  i32.const 1024
+  i32.const 200
+  i32.mul
+  i32.const 100
+  i32.div_u
+  local.set $0
+  loop $do-loop|0
+   local.get $0
+   call $~lib/rt/itcms/step
+   i32.sub
+   local.set $0
+   global.get $~lib/rt/itcms/state
+   i32.const 0
+   i32.eq
+   if
+    i32.const 0
+    drop
+    global.get $~lib/rt/itcms/total
+    i64.extend_i32_u
+    i32.const 200
+    i64.extend_i32_u
+    i64.mul
+    i64.const 100
+    i64.div_u
+    i32.wrap_i64
+    i32.const 1024
+    i32.add
+    global.set $~lib/rt/itcms/threshold
+    i32.const 0
+    drop
+    return
+   end
+   local.get $0
+   i32.const 0
+   i32.gt_s
+   br_if $do-loop|0
+  end
+  i32.const 0
+  drop
+  global.get $~lib/rt/itcms/total
+  i32.const 1024
+  global.get $~lib/rt/itcms/total
+  global.get $~lib/rt/itcms/threshold
+  i32.sub
+  i32.const 1024
+  i32.lt_u
+  i32.mul
+  i32.add
+  global.set $~lib/rt/itcms/threshold
+  i32.const 0
+  drop
+ )
  (func $~lib/rt/itcms/Object#set:rtId (param $0 i32) (param $1 i32)
   local.get $0
   local.get $1
@@ -2022,7 +2048,7 @@
   i32.ge_u
   if
    i32.const 32
-   i32.const 96
+   i32.const 272
    i32.const 261
    i32.const 31
    call $~lib/builtins/abort
@@ -2067,6 +2093,24 @@
   local.get $3
   return
  )
+ (func $as/assembly/alloc/allocI32 (param $0 i32) (result i32)
+  i32.const 0
+  local.get $0
+  call $~lib/staticarray/StaticArray<i32>#constructor
+  return
+ )
+ (func $as/assembly/alloc/allocU32 (param $0 i32) (result i32)
+  i32.const 0
+  local.get $0
+  call $~lib/staticarray/StaticArray<u32>#constructor
+  return
+ )
+ (func $as/assembly/alloc/allocF32 (param $0 i32) (result i32)
+  i32.const 0
+  local.get $0
+  call $~lib/staticarray/StaticArray<f32>#constructor
+  return
+ )
  (func $~lib/rt/itcms/__pin (param $0 i32) (result i32)
   (local $1 i32)
   local.get $0
@@ -2080,8 +2124,8 @@
    i32.const 3
    i32.eq
    if
-    i32.const 432
-    i32.const 96
+    i32.const 544
+    i32.const 272
     i32.const 338
     i32.const 7
     call $~lib/builtins/abort
@@ -2113,8 +2157,8 @@
   i32.const 3
   i32.ne
   if
-   i32.const 496
-   i32.const 96
+   i32.const 608
+   i32.const 272
    i32.const 352
    i32.const 5
    call $~lib/builtins/abort
@@ -2183,16 +2227,19 @@
  )
  (func $~lib/rt/__visit_globals (param $0 i32)
   (local $1 i32)
-  i32.const 224
+  i32.const 400
+  local.get $0
+  call $~lib/rt/itcms/__visit
+  i32.const 160
   local.get $0
   call $~lib/rt/itcms/__visit
   i32.const 32
   local.get $0
   call $~lib/rt/itcms/__visit
-  i32.const 432
+  i32.const 544
   local.get $0
   call $~lib/rt/itcms/__visit
-  i32.const 496
+  i32.const 608
   local.get $0
   call $~lib/rt/itcms/__visit
  )
@@ -2214,25 +2261,34 @@
  )
  (func $~lib/rt/__visit_members (param $0 i32) (param $1 i32)
   block $invalid
-   block $~lib/arraybuffer/ArrayBufferView
-    block $~lib/string/String
-     block $~lib/arraybuffer/ArrayBuffer
-      block $~lib/object/Object
-       local.get $0
-       i32.const 8
-       i32.sub
-       i32.load
-       br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $invalid
+   block $~lib/staticarray/StaticArray<f32>
+    block $~lib/staticarray/StaticArray<u32>
+     block $~lib/staticarray/StaticArray<i32>
+      block $~lib/arraybuffer/ArrayBufferView
+       block $~lib/string/String
+        block $~lib/arraybuffer/ArrayBuffer
+         block $~lib/object/Object
+          local.get $0
+          i32.const 8
+          i32.sub
+          i32.load
+          br_table $~lib/object/Object $~lib/arraybuffer/ArrayBuffer $~lib/string/String $~lib/arraybuffer/ArrayBufferView $~lib/staticarray/StaticArray<i32> $~lib/staticarray/StaticArray<u32> $~lib/staticarray/StaticArray<f32> $invalid
+         end
+         return
+        end
+        return
+       end
+       return
       end
+      local.get $0
+      local.get $1
+      call $~lib/arraybuffer/ArrayBufferView~visit
       return
      end
      return
     end
     return
    end
-   local.get $0
-   local.get $1
-   call $~lib/arraybuffer/ArrayBufferView~visit
    return
   end
   unreachable
@@ -2246,14 +2302,171 @@
   i32.const 1
   i32.shr_u
   global.set $~lib/rt/itcms/threshold
-  i32.const 144
-  call $~lib/rt/itcms/initLazy
-  global.set $~lib/rt/itcms/pinSpace
-  i32.const 176
-  call $~lib/rt/itcms/initLazy
-  global.set $~lib/rt/itcms/toSpace
   i32.const 320
   call $~lib/rt/itcms/initLazy
+  global.set $~lib/rt/itcms/pinSpace
+  i32.const 352
+  call $~lib/rt/itcms/initLazy
+  global.set $~lib/rt/itcms/toSpace
+  i32.const 496
+  call $~lib/rt/itcms/initLazy
   global.set $~lib/rt/itcms/fromSpace
+ )
+ (func $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  global.get $~lib/memory/__data_end
+  i32.lt_s
+  if
+   i32.const 33488
+   i32.const 33536
+   i32.const 1
+   i32.const 1
+   call $~lib/builtins/abort
+   unreachable
+  end
+ )
+ (func $~lib/staticarray/StaticArray<i32>#constructor (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $1
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 160
+   i32.const 208
+   i32.const 51
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $1
+  i32.const 2
+  i32.shl
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.const 4
+  call $~lib/rt/itcms/__new
+  local.tee $3
+  i32.store
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $3
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/staticarray/StaticArray<u32>#constructor (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $1
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 160
+   i32.const 208
+   i32.const 51
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $1
+  i32.const 2
+  i32.shl
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.const 5
+  call $~lib/rt/itcms/__new
+  local.tee $3
+  i32.store
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $3
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
+ )
+ (func $~lib/staticarray/StaticArray<f32>#constructor (param $0 i32) (param $1 i32) (result i32)
+  (local $2 i32)
+  (local $3 i32)
+  (local $4 i32)
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.sub
+  global.set $~lib/memory/__stack_pointer
+  call $~stack_check
+  global.get $~lib/memory/__stack_pointer
+  i32.const 0
+  i32.store
+  local.get $1
+  i32.const 1073741820
+  i32.const 2
+  i32.shr_u
+  i32.gt_u
+  if
+   i32.const 160
+   i32.const 208
+   i32.const 51
+   i32.const 60
+   call $~lib/builtins/abort
+   unreachable
+  end
+  local.get $1
+  i32.const 2
+  i32.shl
+  local.set $2
+  global.get $~lib/memory/__stack_pointer
+  local.get $2
+  i32.const 6
+  call $~lib/rt/itcms/__new
+  local.tee $3
+  i32.store
+  i32.const 2
+  global.get $~lib/shared/runtime/Runtime.Incremental
+  i32.ne
+  drop
+  local.get $3
+  local.set $4
+  global.get $~lib/memory/__stack_pointer
+  i32.const 4
+  i32.add
+  global.set $~lib/memory/__stack_pointer
+  local.get $4
+  return
  )
 )
