@@ -21,11 +21,15 @@ const homedir = os.home() ?? '~'
 
 const healthOk = JSON.stringify({ health: 'ok' })
 
+let serveOpts = IS_DEV ? {
+  key: Deno.readTextFileSync(path.join(homedir, '.ssl-certs', 'devito.test-key.pem')),
+  cert: Deno.readTextFileSync(path.join(homedir, '.ssl-certs', 'devito.test.pem')),
+} : {}
+
 Deno.serve({
   port: 3000,
   hostname: '0.0.0.0',
-  key: Deno.readTextFileSync(path.join(homedir, '.ssl-certs', 'devito.test-key.pem')),
-  cert: Deno.readTextFileSync(path.join(homedir, '.ssl-certs', 'devito.test.pem')),
+  ...serveOpts,
   onListen(addr) {
     console.log(`File server running on https://${addr.hostname}:${addr.port}/`)
   }
