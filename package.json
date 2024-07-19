@@ -9,7 +9,7 @@
     "dev": "vite",
     "build": "vite build",
     "test": "echo ok",
-    "postinstall": "link-local"
+    "postinstall": "link-local || echo ok"
   },
   "devDependencies": {
     "@types/filesystem": "^0.0.36",
