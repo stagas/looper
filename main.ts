@@ -1,12 +1,7 @@
-import { load } from "https://deno.land/std@0.224.0/dotenv/mod.ts"
-import {
-  encodeBase64
-} from "https://deno.land/std@0.224.0/encoding/base64.ts"
+import { load } from 'https://deno.land/std@0.224.0/dotenv/mod.ts'
 import os from 'https://deno.land/x/os_paths@v7.4.0/src/mod.deno.ts'
 import * as media from 'jsr:@std/media-types'
 import * as path from 'jsr:@std/path'
-
-const randomId = () => (Math.random() * 10e6 | 0).toString(36)
 
 const IS_DEV = !Deno.env.get('DENO_REGION')
 
@@ -24,12 +19,7 @@ const distDir = './dist'
 
 const homedir = os.home() ?? '~'
 
-const kv = await Deno.openKv()
-
-const Prefix = {
-  EyesByTime: 'EyesByTime',
-  EyesById: 'EyesById',
-} as const
+const healthOk = JSON.stringify({ health: 'ok' })
 
 Deno.serve({
   port: 3000,
@@ -44,69 +34,10 @@ Deno.serve({
   const pathname = decodeURIComponent(url.pathname)
 
   if (pathname === '/health') {
-    return new Response('{ "health": "ok" }', {
+    return new Response(healthOk, {
       headers: {
         ...commonHeaders,
         'content-type': 'application/json'
-      }
-    })
-  }
-
-  if (pathname === '/upload-eyes') {
-    const form = await request.formData()
-    if (form) {
-      console.log(form)
-      const image = form.get('image') as File
-      const time = Date.now()
-      const id = randomId()
-      const key = [Prefix.EyesByTime, time, id]
-      const keyById = [Prefix.EyesById, id, time]
-
-      const item = new Uint8Array(await image.arrayBuffer())
-
-      const res = await kv.atomic()
-        .check({ key: key, versionstamp: null })
-        .check({ key: keyById, versionstamp: null })
-        .set(key, item)
-        .set(keyById, item)
-        .commit()
-
-      console.log('yeah')
-      return new Response(JSON.stringify({
-        success: true,
-        id,
-        time,
-      }), {
-        status: 201,
-        headers: {
-          ...commonHeaders,
-          'content-type': 'application/json'
-        }
-      })
-    }
-    else {
-      return new Response(null, { status: 400 })
-    }
-  }
-
-  if (pathname === '/list-eyes') {
-    const items = ((await Array.fromAsync(
-      kv.list(
-        {
-          prefix: [Prefix.EyesByTime]
-        },
-        {
-          reverse: true
-        })))
-      .map(item => item.value)
-      .filter(value => value instanceof Uint8Array) as Uint8Array[])
-      .map(u8 => encodeBase64(u8))
-
-    return new Response(
-      JSON.stringify(items), {
-      headers: {
-        ...commonHeaders,
-        type: 'application/json'
       }
     })
   }

@@ -21,5 +21,9 @@
     "titleBar.inactiveBackground": "#fb28f199",
     "titleBar.inactiveForeground": "#e7e7e799"
   },
-  "peacock.color": "#fb28f1"
+  "peacock.color": "#fb28f1",
+  "deno.enable": true,
+  "deno.enablePaths": [
+    "./main.ts"
+  ]
 }

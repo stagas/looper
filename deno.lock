@@ -62,15 +62,26 @@
     "packageJson": {
       "dependencies": [
         "npm:@tensorflow/tfjs@^4.20.0",
+        "npm:@types/filesystem@^0.0.36",
         "npm:@types/node@^20.14.4",
+        "npm:@types/sortablejs@^1.15.8",
+        "npm:@types/wicg-file-system-access@^2023.10.5",
+        "npm:assemblyscript@^0.27.29",
         "npm:autoprefixer@^10.4.17",
         "npm:daisyui@^4.6.0",
         "npm:face-api.js@^0.22.2",
+        "npm:idb-keyval@^6.2.1",
+        "npm:jsdom@^24.1.0",
+        "npm:jszip@^3.10.1",
         "npm:postcss-load-config@^5.0.2",
         "npm:postcss@^8.4.33",
+        "npm:sortablejs@^1.15.2",
         "npm:tailwindcss@^3.4.1",
+        "npm:tippy.js@^6.3.7",
+        "npm:vite-plugin-externalize-dependencies@^0.13.0",
         "npm:vite-plugin-node-polyfills@^0.19.0",
-        "npm:vite@^5.3.3"
+        "npm:vite-tsconfig-paths@^4.3.2",
+        "npm:vite@^5.3.4"
       ]
     }
   }
