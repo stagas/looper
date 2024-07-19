@@ -70,21 +70,23 @@ export function Main() {
 
   const players = <div class="flex flex-col gap-1" /> as HTMLDivElement
 
+  function onEnd(ev: Sortable.SortableEvent) {
+    const sorting: Sorting = {}
+    for (const stack of players.children) {
+      const name = (stack as HTMLElement).dataset.name || '<invalid>'
+      const stems: string[] = []
+      for (const stem of (stack.lastChild as HTMLElement).children) {
+        const name = (stem as HTMLElement).dataset.name || '<invalid>'
+        stems.push(name)
+      }
+      sorting[name] = stems
+    }
+    appState.sorting = sorting
+  }
+
   Sortable.create(players, {
     animation: 120,
-    onEnd(ev) {
-      const sorting: Sorting = {}
-      for (const stack of players.children) {
-        const name = (stack as HTMLElement).dataset.name || '<invalid>'
-        const stems: string[] = []
-        for (const stem of stack.children) {
-          const name = (stem as HTMLElement).dataset.name || '<invalid>'
-          stems.push(name)
-        }
-        sorting[name] = stems
-      }
-      appState.sorting = sorting
-    }
+    onEnd,
   })
 
   const info = $({
@@ -95,8 +97,9 @@ export function Main() {
     const { stacks } = info
     $()
     const els = stacks.map(stack =>
-      <Player {...{ stack }} />
+      <Player {...{ stack, onEnd }} />
     )
+
     players.innerHTML = ''
 
     for (const el of els) {
@@ -125,8 +128,13 @@ export function Main() {
         const stack = await readZipFile(dirHandle, file.name)
         openFolder.remove()
         info.stacks.push(stack)
+        info.stacks.sort((a, b) =>
+          Object.keys(appState.sorting).indexOf(a.name)
+          - Object.keys(appState.sorting).indexOf(b.name)
+        )
         info.stacks = [...info.stacks]
       }
+      console.log(appState.sorting)
     }
     else {
       DEBUG && console.warn('dirHandle not found')
