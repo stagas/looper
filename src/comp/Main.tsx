@@ -110,7 +110,7 @@ export function Main() {
     const { stacks } = info
     $()
     const els = stacks.map(stack =>
-      <Player {...{ stack, onEnd }} />
+      <Player {...{ audio, stack, onEnd }} />
     )
 
     players.innerHTML = ''
@@ -160,8 +160,10 @@ export function Main() {
     const current = []
     let countUp = 0
     let countDown = 0
+
     for (const [i, ev] of schedule.entries()) {
       ev.source.start(ev.targetTime)
+
       setTimeout(() => {
         ev.stem.info.isPlaying = true
       }, (ev.targetTime - audio.currentTime) * 1000)
@@ -203,11 +205,12 @@ export function Main() {
     }
   }
   const playBtn = <div class="flex flex-row items-center justify-start gap-2">
-    <div class="w-40" />
+    <div class="w-36" />
     <button
       class="
       btn
       btn-primary
+      w-44
     "
       onclick={play}
     >Play</button>
@@ -219,7 +222,13 @@ export function Main() {
       DEBUG && console.log('GOT dirHandle', dirHandle)
       const zipFiles = await findZipFiles(dirHandle)
       openFolder.replaceWith(playBtn)
+
+      // TEMP
+      let count = 6
       for (const file of zipFiles) {
+        // TEMP
+        if (!--count) break
+
         const stack = await readZipFile(dirHandle, file.name)
         info.stacks.push(stack)
         info.stacks.sort((a, b) =>
@@ -311,7 +320,7 @@ export function Main() {
 
   tryReadDir()
 
-  return <main class="flex flex-col gap-2">
+  return <main class="flex flex-col gap-2 items-start justify-start">
     {openFolder}
     {players}
   </main>

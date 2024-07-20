@@ -5,7 +5,9 @@ import Sortable from 'sortablejs'
 import tippy from 'tippy.js'
 import 'tippy.js/dist/tippy.css'
 
-export function Player({ stack, onEnd }: { stack: Stack, onEnd: (ev: Sortable.SortableEvent) => void }) {
+export function Player({ audio, stack, onEnd }: {
+  audio: AudioContext, stack: Stack, onEnd: (ev: Sortable.SortableEvent) => void
+}) {
   using $ = Signal()
 
   stack.stems.sort((a, b) =>
@@ -14,11 +16,32 @@ export function Player({ stack, onEnd }: { stack: Stack, onEnd: (ev: Sortable.So
   )
 
   const stems = stack.stems.map(stem => {
+    let source: AudioBufferSourceNode | null | undefined
+
+    function playOrStop() {
+      if (source) {
+        source.stop()
+        source = null
+        return
+      }
+      source = audio.createBufferSource()
+      source.buffer = stem.buffer
+      source.connect(audio.destination)
+      source.start()
+
+      stem.info.isPlaying = true
+      source.onended = () => {
+        stem.info.isPlaying = false
+      }
+    }
+
     const el = <div style={{
       width: '30px',
       height: '30px',
       backgroundColor: StemColors[stem.kind], //`hsl(${(240 - (i * 40)) % 360}, 50%, 50%)`
-    }} data-name={stem.name} />
+    }} data-name={stem.name}
+      onclick={playOrStop}
+    />
 
     tippy(el, { content: stem.name })
 
@@ -50,7 +73,7 @@ export function Player({ stack, onEnd }: { stack: Stack, onEnd: (ev: Sortable.So
   })
 
   const el = <div class="flex flex-row gap-2" data-name={stack.name}>
-    <div class="w-40 flex items-center justify-end">{stack.name}</div>
+    <div class="w-36 flex items-center justify-end">{stack.name}</div>
     {stemsEl}
   </div>
 
