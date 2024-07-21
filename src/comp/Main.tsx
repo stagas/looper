@@ -28,12 +28,14 @@ import { gridState } from '../grid-state.ts'
 
 const DEBUG = false
 
-const VOL_TIME_CONSTANT = 0.03
 
 const BPM = 144
 const TIME_BEAT = 60 / BPM
 const TIME_BAR = TIME_BEAT * 4
 const TIME_DELAY = 0.2
+
+const VOL_TIME_CONSTANT = 0.03
+const VOL_TIME_FADE = TIME_BAR
 
 export interface Stack {
   name: string
@@ -78,15 +80,6 @@ export enum StemKind {
 export const StemColors = Object.fromEntries(Object.keys(StemKind).map((name, i) =>
   [name, `hsl(${(235 - (i * 20)) % 360}, 65%, 55%)`]
 ))
-
-export interface ScheduleEvent {
-  stem: Stem
-  targetTime: number
-  source: AudioBufferSourceNode
-  gain: GainNode
-  isStart: boolean
-  isEnd: boolean
-}
 
 export function Main() {
   using $ = Signal()
@@ -151,7 +144,7 @@ export function Main() {
           if (stack.name === ev.stack) {
             for (const stem of stack.stems) {
               if (stem.name === ev.stem) {
-                return stem
+                return { ev, stem }
               }
             }
           }
@@ -184,20 +177,38 @@ export function Main() {
     playBtn.replaceWith(stopBtn)
     const busy: boolean[][] = []
     const timeStart = audio.currentTime + TIME_DELAY
+    const rowGains: GainNode[] = []
     for (const ev of appState.cellEvents) {
       if (ev.x < startX) continue
 
-      const stem = findCellStem(ev.x, ev.y)
-      if (stem) {
+      const cellStem = findCellStem(ev.x, ev.y)
+
+      rowGains[ev.y] ??= audio.createGain()
+
+      if (cellStem) {
+        const stem = cellStem.stem
+
+        // determine playback times
+
         busy[ev.y] ??= []
 
         const stemTimeStart = (ev.x - startX) * TIME_BAR
+
+        const gain = rowGains[ev.y]
+        gain.gain.value = 0
+        gain.gain.setTargetAtTime(
+          ev.fade === '-' || ev.fade === '/' ? stem.vol : 0,
+          timeStart + stemTimeStart,
+          ev.fade === '-' ? VOL_TIME_CONSTANT : VOL_TIME_FADE
+        )
 
         timeouts.push(setTimeout(() => {
           gridState.indicators[ev.x].style.backgroundColor = '#fff'
         }, (TIME_DELAY + stemTimeStart) * 1000))
 
-        if (busy[ev.y][ev.x]) continue
+        if (busy[ev.y][ev.x]) {
+          continue
+        }
 
         busy[ev.y][ev.x] = true
 
@@ -205,7 +216,7 @@ export function Main() {
 
         let actualBarEnd = ev.x
         for (let x = ev.x; x < ev.x + bars; x++) {
-          if (findCellStem(x, ev.y) === stem) {
+          if (findCellStem(x, ev.y)?.stem === stem) {
             actualBarEnd++
             busy[ev.y][x] = true
           }
@@ -213,12 +224,17 @@ export function Main() {
             break
           }
         }
+        const stemTimeEnd = (actualBarEnd - startX) * TIME_BAR
+
+        // prepare audio
+
         const source = audio.createBufferSource()
         sources.push(source)
         source.buffer = stem.buffer
 
-        const stemTimeEnd = (actualBarEnd - startX) * TIME_BAR
-        source.connect(audio.destination)
+        source.connect(gain)
+        gain.connect(audio.destination)
+
         source.start(timeStart + stemTimeStart)
         source.stop(timeStart + stemTimeEnd)
       }
