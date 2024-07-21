@@ -32,6 +32,7 @@ const VOL_TIME_CONSTANT = 0.03
 const BPM = 144
 const TIME_BEAT = 60 / BPM
 const TIME_BAR = TIME_BEAT * 4
+const TIME_DELAY = 0.2
 
 export interface Stack {
   name: string
@@ -236,28 +237,35 @@ export function Main() {
   }
 
   function play() {
-    const timeBeat = 1000 / BPM
     const busy: boolean[][] = []
+    const timeStart = audio.currentTime + TIME_DELAY
     for (const ev of appState.cellEvents) {
-      // const timeStart = ev.x * TIME_BAR
       const stem = findCellStem(ev.x, ev.y)
       if (stem) {
         busy[ev.y] ??= []
+
+        if (busy[ev.y][ev.x]) continue
+
         busy[ev.y][ev.x] = true
 
         const bars = Math.round(stem.buffer.duration / TIME_BAR)
-        const barEnd = ev.x + bars
-        // let actualTimeEnd = timeStart + TIME_BAR
-        for (let i = ev.x; i < ev.x + bars; i++) {
-          if (busy[ev.y][ev.x]) continue
-
+        let actualBarEnd = ev.x + 1
+        for (let x = ev.x; x < ev.x + bars; x++) {
+          if (findCellStem(x, ev.y) === stem) {
+            actualBarEnd++
+            busy[ev.y][x] = true
+          }
         }
         const source = audio.createBufferSource()
         source.buffer = stem.buffer
-
+        const stemTimeStart = timeStart + ev.x * TIME_BAR
+        const stemTimeEnd = timeStart + actualBarEnd * TIME_BAR
+        source.connect(audio.destination)
+        source.start(stemTimeStart)
+        source.stop(stemTimeEnd)
       }
-
     }
+    // const timeEnd =
   }
 
   const playBtn = <div class="flex flex-row items-start justify-start gap-2">
