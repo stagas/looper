@@ -1,14 +1,12 @@
 import { cleanup, fx, hmr, mount } from 'signal-jsx'
 import { appState, replaceAppState } from './app-state.ts'
 import { Main } from './comp/Main.tsx'
-import seq from 'assembly-seq'
 
 export const start = mount('#container', target => {
   return fx(() => {
     target.replaceChildren(
       <div
-        data-theme={() => appState.theme}
-        class="h-full w-full flex flex-col items-center justify-start pt-5"
+        class="flex flex-col items-start justify-start pt-5"
       >
         <Main />
       </div>
@@ -23,5 +21,3 @@ if (import.meta.hot) {
 else {
   start()
 }
-
-console.log('from wasm', seq.add(32, 10))

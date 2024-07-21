@@ -4,6 +4,7 @@ import { get, set } from 'idb-keyval'
 import JSZip from 'jszip'
 import { Player } from './Player.tsx'
 import Sortable from 'sortablejs' ///modular/sortable.complete.esm.js'
+import { Grid } from './Grid.tsx'
 
 // declare const window: any
 
@@ -28,14 +29,21 @@ const DEBUG = false
 
 const VOL_TIME_CONSTANT = 0.03
 
+const BPM = 144
+const COEFF = 60 / BPM * 4
+
 export interface Stack {
   name: string
   bpm: number
   stems: Stem[]
+  info: $<{
+    short: string
+  }>
 }
 
 export interface Stem {
   stack: Stack
+  index: number
   name: string
   bpm: number
   kind: StemKind
@@ -43,6 +51,7 @@ export interface Stem {
   vol: number
   info: $<{
     isPlaying: boolean
+    color: string
   }>
 }
 
@@ -136,6 +145,7 @@ export function Main() {
     // console.log(info.stacks)
     const schedule: ScheduleEvent[] = []
     let targetTime = audio.currentTime + 0.1
+
     for (const stack of info.stacks) {
       for (const [i, stem] of stack.stems.entries()) {
         const source = audio.createBufferSource()
@@ -161,7 +171,9 @@ export function Main() {
     let countUp = 0
     let countDown = 0
 
-    for (const [i, ev] of schedule.entries()) {
+    for (let i = 0; i < schedule.length; i++) {
+      const ev = schedule[i]
+
       ev.source.start(ev.targetTime)
 
       setTimeout(() => {
@@ -204,8 +216,8 @@ export function Main() {
       }
     }
   }
-  const playBtn = <div class="flex flex-row items-center justify-start gap-2">
-    <div class="w-36" />
+  const playBtn = <div class="flex flex-row items-start justify-start gap-2">
+    {/* <div class="w-36" /> */}
     <button
       class="
       btn
@@ -224,7 +236,7 @@ export function Main() {
       openFolder.replaceWith(playBtn)
 
       // TEMP
-      let count = 6
+      let count = 4
       for (const file of zipFiles) {
         // TEMP
         if (!--count) break
@@ -237,7 +249,7 @@ export function Main() {
         )
         info.stacks = [...info.stacks]
       }
-      console.log(appState.sorting)
+      // console.log(appState.sorting)
     }
     else {
       DEBUG && console.warn('dirHandle not found')
@@ -259,10 +271,16 @@ export function Main() {
     for (const file of Object.values(zipContent.files)) {
       if (file.dir) {
         const name = file.name.slice(0, -1).replace(/\s*\[Stems\]\s*/, '').trim()
+        const info = $({
+          get short() {
+            return name.split(' ').map(x => x[0]).join('')
+          }
+        })
         stack = {
           name,
           bpm: 0,
-          stems: []
+          stems: [],
+          info,
         }
 
         continue
@@ -272,6 +290,7 @@ export function Main() {
 
       const name = file.name.split('/')[1].split(' - ').slice(2).join(' - ').replace('.wav', '')
       const bpm = Number(file.name.split('/')[1].split(' - ')[1].split(' ')[0])
+      const index = Number(file.name.split('/')[1].split(' - ')[2])
       const kind = file.name.split('/')[1].split(' - ')[3] as StemKind
 
       const arrayBuffer = await file.async('arraybuffer')
@@ -279,10 +298,14 @@ export function Main() {
 
       const info = $({
         isPlaying: false,
+        get color() {
+          return `hsl(${(286 - (stem.index * 46)) % 360}, 75%, 50%)`
+        }
       })
 
       const stem: Stem = {
         stack,
+        index,
         name,
         bpm,
         kind,
@@ -320,8 +343,17 @@ export function Main() {
 
   tryReadDir()
 
-  return <main class="flex flex-col gap-2 items-start justify-start">
+  const grid = <div />
+  setTimeout(() => {
+    grid.replaceWith(<Grid {...{ info }} />)
+  })
+  return <main class="flex flex-col gap-2 max-w-full p-4 items-center justify-center">
     {openFolder}
-    {players}
+    <div class="w-full relative overflow-x-scroll pb-1">
+      {grid}
+    </div>
+    <div class="flex flex-row items-start justify-start gap-1.5">
+      {players}
+    </div>
   </main>
 }

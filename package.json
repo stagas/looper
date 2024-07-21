@@ -6,12 +6,13 @@
   "type": "module",
   "main": "src/index.ts",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "NODE_OPTIONS=\"--import /home/stagas/bin/register.js\" vite",
+    "build": "NODE_OPTIONS=\"--import /home/stagas/bin/register.js\" vite build",
     "test": "echo ok",
     "postinstall": "link-local"
   },
   "devDependencies": {
+    "@types/audioworklet": "^0.0.57",
     "@types/filesystem": "^0.0.36",
     "@types/node": "^20.14.4",
     "@types/sortablejs": "^1.15.8",

@@ -1,3 +1,4 @@
+/// <reference lib="deno.ns" />
 import { load } from 'https://deno.land/std@0.224.0/dotenv/mod.ts'
 import os from 'https://deno.land/x/os_paths@v7.4.0/src/mod.deno.ts'
 import * as media from 'jsr:@std/media-types'

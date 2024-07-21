@@ -65,15 +65,5 @@ export default defineConfig({
         (moduleName) => moduleName.startsWith('node:')
       ],
     }),
-    assemblyScriptPlugin({
-      configFile: 'asconfig-seq.json',
-      projectRoot: '.',
-      srcMatch: 'as/assembly/seq',
-      srcEntryFile: 'as/assembly/seq/index.ts',
-      mapFile: './as/build/seq.wasm.map',
-      // extra: [
-      //   '--transform', './vendor/unroll.js',
-      // ]
-    }) as Plugin,
   ],
 })
