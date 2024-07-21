@@ -12,15 +12,20 @@ interface Row {
   y: number
   cells: Cell[]
   el: HTMLDivElement
+  fades: HTMLDivElement
 }
+
+export type FadeState = '-' | '/' | '\\'
 
 interface Cell {
   x: number
   y: number
   el: Element
+  fade: Element
   tippy: Instance | null
   info: $<{
     stem: Stem | null
+    fade: FadeState
   }>
 }
 
@@ -34,7 +39,7 @@ export function Grid({ play, info }: { play(startX: number): void, info: { stack
           if (stack.name === ev.stack) {
             for (const stem of stack.stems) {
               if (stem.name === ev.stem) {
-                return stem
+                return { ev, stem }
               }
             }
           }
@@ -56,7 +61,8 @@ export function Grid({ play, info }: { play(startX: number): void, info: { stack
               x: cell.x,
               y: cell.y,
               stack: cell.info.stem.stack.name,
-              stem: cell.info.stem.name
+              stem: cell.info.stem.name,
+              fade: cell.info.fade
             })
           }
         }
@@ -110,16 +116,40 @@ export function Grid({ play, info }: { play(startX: number): void, info: { stack
           }}
         /> as HTMLDivElement
 
-        const stem = findCellStem(x, y)
+        const cellStem = findCellStem(x, y)
+
+        const stem = cellStem?.stem ?? null
+
+        function toggleFade() {
+          const { fade } = cell.info
+          if (fade === '-') {
+            cell.info.fade = '/'
+          }
+          else if (fade === '/') {
+            cell.info.fade = '\\'
+          }
+          else {
+            cell.info.fade = '-'
+          }
+          updateCellEvents()
+        }
+
+        const cellInfo = $({
+          stem,
+          fade: cellStem?.ev.fade ?? '-' as FadeState,
+        })
+
+        const fade = <div class="min-w-[30px] h-2 bg-slate-800 text-white flex items-center justify-center" onclick={toggleFade}>
+          {() => cellInfo.stem && cellInfo.fade}
+        </div>
 
         const cell: Cell = {
           x,
           y,
           el,
+          fade,
           tippy: stem ? tippy(el, { content: stem.name }) : null,
-          info: $({
-            stem
-          })
+          info: cellInfo
         }
 
         cells.push(cell)
@@ -136,7 +166,11 @@ export function Grid({ play, info }: { play(startX: number): void, info: { stack
         {...cells.map(x => x.el)}
       </div> as HTMLDivElement
 
-      rows.push({ y, cells, el: row })
+      const rowFades = <div class="text-black flex flex-row gap-1 items-start justify-start">
+        {...cells.map(x => x.fade)}
+      </div> as HTMLDivElement
+
+      rows.push({ y, cells, el: row, fades: rowFades })
     }
 
     const indicators = <div class="flex flex-row gap-1 items-start justify-start">{Array.from({ length: sizeX }, (_, x) =>
@@ -147,7 +181,7 @@ export function Grid({ play, info }: { play(startX: number): void, info: { stack
 
     const newEl = <div class="flex flex-col gap-1" oncontextmenu={prevent}>
       {indicators}
-      {...rows.map(x => x.el)}
+      {...rows.flatMap(x => [x.el, x.fades])}
     </div>
     el.replaceWith(newEl)
     el = newEl

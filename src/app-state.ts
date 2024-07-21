@@ -1,7 +1,7 @@
 import { Theme } from 'daisyui'
 import themes from 'daisyui/src/theming/themes'
 import { $, storage } from 'signal-jsx'
-import { Stem } from './comp/Main.tsx'
+import { FadeState } from './comp/Grid.tsx'
 
 export interface Sorting {
   [K: string]: string[]
@@ -12,6 +12,7 @@ export interface CellEvent {
   y: number
   stack: string
   stem: string
+  fade: FadeState
 }
 
 class AppState {
