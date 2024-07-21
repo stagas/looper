@@ -140,10 +140,7 @@ export function Grid({ info }: { info: { stacks: Stack[] } }) {
     const { stacks } = info
     $()
     update()
-    console.log('yeah')
   })
-
-  update()
 
   return el
 }
