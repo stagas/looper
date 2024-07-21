@@ -30,7 +30,8 @@ const DEBUG = false
 const VOL_TIME_CONSTANT = 0.03
 
 const BPM = 144
-const COEFF = 60 / BPM * 4
+const TIME_BEAT = 60 / BPM
+const TIME_BAR = TIME_BEAT * 4
 
 export interface Stack {
   name: string
@@ -141,7 +142,7 @@ export function Main() {
     select a folder with Splice zip files
   </button>
 
-  function play() {
+  function play_old() {
     // console.log(info.stacks)
     const schedule: ScheduleEvent[] = []
     let targetTime = audio.currentTime + 0.1
@@ -216,6 +217,49 @@ export function Main() {
       }
     }
   }
+
+  function findCellStem(x: number, y: number) {
+    for (const ev of appState.cellEvents) {
+      if (ev.x === x && ev.y === y) {
+        for (const stack of info.stacks) {
+          if (stack.name === ev.stack) {
+            for (const stem of stack.stems) {
+              if (stem.name === ev.stem) {
+                return stem
+              }
+            }
+          }
+        }
+      }
+    }
+    return null
+  }
+
+  function play() {
+    const timeBeat = 1000 / BPM
+    const busy: boolean[][] = []
+    for (const ev of appState.cellEvents) {
+      // const timeStart = ev.x * TIME_BAR
+      const stem = findCellStem(ev.x, ev.y)
+      if (stem) {
+        busy[ev.y] ??= []
+        busy[ev.y][ev.x] = true
+
+        const bars = Math.round(stem.buffer.duration / TIME_BAR)
+        const barEnd = ev.x + bars
+        // let actualTimeEnd = timeStart + TIME_BAR
+        for (let i = ev.x; i < ev.x + bars; i++) {
+          if (busy[ev.y][ev.x]) continue
+
+        }
+        const source = audio.createBufferSource()
+        source.buffer = stem.buffer
+
+      }
+
+    }
+  }
+
   const playBtn = <div class="flex flex-row items-start justify-start gap-2">
     {/* <div class="w-36" /> */}
     <button
