@@ -5,6 +5,7 @@ import JSZip from 'jszip'
 import { Player } from './Player.tsx'
 import Sortable from 'sortablejs' ///modular/sortable.complete.esm.js'
 import { Grid } from './Grid.tsx'
+import { gridState } from '../grid-state.ts'
 
 // declare const window: any
 
@@ -143,82 +144,6 @@ export function Main() {
     select a folder with Splice zip files
   </button>
 
-  function play_old() {
-    // console.log(info.stacks)
-    const schedule: ScheduleEvent[] = []
-    let targetTime = audio.currentTime + 0.1
-
-    for (const stack of info.stacks) {
-      for (const [i, stem] of stack.stems.entries()) {
-        const source = audio.createBufferSource()
-        source.buffer = stem.buffer
-        source.loop = true
-        const gain = audio.createGain()
-        gain.gain.value = 0
-        source.connect(gain)
-        gain.connect(audio.destination)
-        schedule.push({
-          stem,
-          targetTime,
-          source,
-          gain,
-          isStart: i === 0,
-          isEnd: i === stack.stems.length - 1
-        })
-        targetTime += stem.buffer.duration
-      }
-    }
-
-    const current = []
-    let countUp = 0
-    let countDown = 0
-
-    for (let i = 0; i < schedule.length; i++) {
-      const ev = schedule[i]
-
-      ev.source.start(ev.targetTime)
-
-      setTimeout(() => {
-        ev.stem.info.isPlaying = true
-      }, (ev.targetTime - audio.currentTime) * 1000)
-
-      ev.gain.gain.setTargetAtTime(
-        ev.stem.vol,
-        ev.targetTime,
-        VOL_TIME_CONSTANT // TODO: fade in
-      )
-
-      current.push(ev)
-      ++countUp
-
-      if (ev.isEnd) {
-        countDown = countUp
-        countUp = 0
-      }
-
-      if (--countDown >= 0) {
-        const old = current.shift()
-        if (old) {
-          const endTime =
-            schedule[i + 2]?.targetTime
-            || schedule[i + 1]?.targetTime
-            || ev.targetTime
-
-          old.source.stop(endTime)
-          old.gain.gain.setTargetAtTime(
-            0,
-            endTime,
-            VOL_TIME_CONSTANT // TODO: fade out
-          )
-
-          setTimeout(() => {
-            old.stem.info.isPlaying = false
-          }, (endTime - audio.currentTime) * 1000)
-        }
-      }
-    }
-  }
-
   function findCellStem(x: number, y: number) {
     for (const ev of appState.cellEvents) {
       if (ev.x === x && ev.y === y) {
@@ -236,33 +161,66 @@ export function Main() {
     return null
   }
 
-  function play() {
+  let timeouts: NodeJS.Timeout[] = []
+  let sources: AudioBufferSourceNode[] = []
+
+  function stop() {
+    for (const t of timeouts) {
+      clearTimeout(t)
+    }
+    timeouts = []
+    for (const s of sources) {
+      s.stop()
+    }
+    for (const i of gridState.indicators) {
+      i.style.backgroundColor = ''
+    }
+    sources = []
+    stopBtn.replaceWith(playBtn)
+  }
+
+  function play(startX = 0) {
+    stop()
+    playBtn.replaceWith(stopBtn)
     const busy: boolean[][] = []
     const timeStart = audio.currentTime + TIME_DELAY
     for (const ev of appState.cellEvents) {
+      if (ev.x < startX) continue
+
       const stem = findCellStem(ev.x, ev.y)
       if (stem) {
         busy[ev.y] ??= []
+
+        const stemTimeStart = (ev.x - startX) * TIME_BAR
+
+        timeouts.push(setTimeout(() => {
+          gridState.indicators[ev.x].style.backgroundColor = '#fff'
+        }, (TIME_DELAY + stemTimeStart) * 1000))
 
         if (busy[ev.y][ev.x]) continue
 
         busy[ev.y][ev.x] = true
 
         const bars = Math.round(stem.buffer.duration / TIME_BAR)
-        let actualBarEnd = ev.x + 1
+
+        let actualBarEnd = ev.x
         for (let x = ev.x; x < ev.x + bars; x++) {
           if (findCellStem(x, ev.y) === stem) {
             actualBarEnd++
             busy[ev.y][x] = true
           }
+          else {
+            break
+          }
         }
         const source = audio.createBufferSource()
+        sources.push(source)
         source.buffer = stem.buffer
-        const stemTimeStart = timeStart + ev.x * TIME_BAR
-        const stemTimeEnd = timeStart + actualBarEnd * TIME_BAR
+
+        const stemTimeEnd = (actualBarEnd - startX) * TIME_BAR
         source.connect(audio.destination)
-        source.start(stemTimeStart)
-        source.stop(stemTimeEnd)
+        source.start(timeStart + stemTimeStart)
+        source.stop(timeStart + stemTimeEnd)
       }
     }
     // const timeEnd =
@@ -276,8 +234,20 @@ export function Main() {
       btn-primary
       w-44
     "
-      onclick={play}
+      onclick={() => play()}
     >Play</button>
+  </div>
+
+  const stopBtn = <div class="flex flex-row items-start justify-start gap-2">
+    {/* <div class="w-36" /> */}
+    <button
+      class="
+      btn
+      btn-primary
+      w-44
+    "
+      onclick={stop}
+    >Stop</button>
   </div>
 
   async function tryReadDir() {
@@ -301,7 +271,6 @@ export function Main() {
         )
         info.stacks = [...info.stacks]
       }
-      // console.log(appState.sorting)
     }
     else {
       DEBUG && console.warn('dirHandle not found')
@@ -395,9 +364,10 @@ export function Main() {
 
   tryReadDir()
 
-  const grid = <div />
+  let grid = <div />
+
   setTimeout(() => {
-    grid.replaceWith(<Grid {...{ info }} />)
+    grid.replaceWith(grid = <Grid {...{ play, info }} />)
   })
   return <main class="flex flex-col gap-2 max-w-full p-4 items-center justify-center">
     {openFolder}
